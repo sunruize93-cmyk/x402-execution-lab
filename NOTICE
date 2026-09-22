@@ -1,0 +1,22 @@
+x402 Execution Lab
+Copyright 2026 x402 Execution Lab contributors
+
+This project is independently maintained and is not endorsed by the x402
+Foundation, Coinbase, Circle, or the Ethereum Foundation.
+
+Code, original synthetic fixtures, and documentation: Apache License 2.0.
+The local token is an original test implementation of the EIP-3009 interface
+and EIP-712 message structure, not a production USDC contract.
+
+Principal runtime dependencies:
+  @x402/core and @x402/evm — Apache-2.0
+  viem, Ajv, canonicalize — MIT
+Principal development dependencies:
+  Anvil — MIT OR Apache-2.0
+  Solidity compiler (solc-js wrapper), json-schema-to-typescript, tsx,
+  Prettier, @types/node — MIT
+  TypeScript — Apache-2.0
+
+Complete resolved package identities and integrity hashes are in package-lock.json.
+Dependency license metadata is checked by scripts/check-licenses.mjs; dependency
+copyright and license notices remain in their distributed npm packages.
