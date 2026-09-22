@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
-import { checkTrace, reportExitCode } from '../core/index.js';
+import { checkTrace, reportExitCode, diagnoseReport } from '../core/index.js';
 import { parseReport } from '../contracts/index.js';
 import { CASES, scriptedCase } from '../local-driver/scripted.js';
 import { readJson, readTrace, save } from './io.js';
@@ -13,8 +13,10 @@ const HELP = `x402 Execution Lab 0.1.0
   x402-lab run --case timeout-late-confirmation --driver scripted|local [--out artifacts/run]
   x402-lab check --trace trace.json[l] [--rules fees-and-settlement] [--out artifacts/check]
   x402-lab report --input findings.json --format html [--output report.html]
+  x402-lab diagnose --input findings.json [--out artifacts/diagnosis]
   x402-lab import-arena --input export.json --output trace.json
 
+Reports: --lang en|zh-CN (default en). run/check also write diagnostics.json.
 CI: --allow-incomplete, --require-rule RULE[,RULE...]
 Exit codes: 0 passes chosen policy; 1 conformance failure; 2 incomplete evidence; 3 runner/input error.
 Local driver: temporary owned Anvil 31337 only; --timeout-ms 60000 (1000..300000).
@@ -34,6 +36,7 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
         input: { type: 'string' },
         output: { type: 'string' },
         format: { type: 'string' },
+        lang: { type: 'string' },
         rules: { type: 'string' },
         'timeout-ms': { type: 'string' },
         'allow-incomplete': { type: 'boolean' },
@@ -47,6 +50,21 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
       return 0;
     }
     if (positionals.length !== 1) throw new Error('Unexpected positional arguments');
+    const locale = v.lang ?? 'en';
+    if (locale !== 'en' && locale !== 'zh-CN')
+      throw new Error('Unsupported --lang; use en or zh-CN');
+    if (command === 'diagnose') {
+      if (!v.input) throw new Error('diagnose requires --input findings.json');
+      const report = parseReport(await readJson(v.input));
+      const out = v.out ?? 'artifacts/diagnosis';
+      await save(
+        `${out}/diagnostics.json`,
+        JSON.stringify(diagnoseReport(report, locale), null, 2) + '\n',
+      );
+      await save(`${out}/report.html`, renderHtml(report, locale));
+      console.log(`${out}/diagnostics.json\n${out}/report.html`);
+      return 0; // Advice generation succeeded; original finding status is unchanged.
+    }
     if (command === 'list') {
       for (const [name, id] of Object.entries(CASES)) console.log(`${id}\t${name}`);
       return 0;
@@ -56,7 +74,7 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
         throw new Error('report requires --input and --format html');
       const r = parseReport(await readJson(v.input));
       const output = v.output ?? 'report.html';
-      await save(output, renderHtml(r));
+      await save(output, renderHtml(r, locale));
       console.log(output);
       return 0;
     }
@@ -95,7 +113,11 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
     const report = checkTrace(trace);
     await save(`${out}/trace.json`, JSON.stringify(trace, null, 2) + '\n');
     await save(`${out}/findings.json`, JSON.stringify(report, null, 2) + '\n');
-    await save(`${out}/report.html`, renderHtml(report));
+    await save(
+      `${out}/diagnostics.json`,
+      JSON.stringify(diagnoseReport(report, locale), null, 2) + '\n',
+    );
+    await save(`${out}/report.html`, renderHtml(report, locale));
     console.log(
       `${report.status.toUpperCase()} · ${report.traceId}\n${report.coverage.pass} pass / ${report.coverage.fail} fail / ${report.coverage.inconclusive} incomplete\n${report.replay.settlement} · spent ${report.replay.budget.spent} / reserved ${report.replay.budget.reserved}\n${out}/findings.json\n${out}/report.html`,
     );

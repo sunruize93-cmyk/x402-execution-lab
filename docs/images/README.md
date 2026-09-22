@@ -1,33 +1,31 @@
-# Report screenshots / 报告截图
+# Diagnostic screenshots
 
-Captured on 2026-09-22 from the unchanged HTML renderer at commit `a84c09f6bdfdb03ecf66145e3ddcf88035c5bb63`. These are browser screenshots of actual local runs, not mockups. No text, counts, or status values were replaced in the images.
+The English and Chinese images show the same actual local duplicate-payment run. Each README uses one viewport-sized diagnostic summary. No report text or values were edited in the images. The report's detailed checks and source context remain available in collapsed panels.
 
-2026-09-22 实际运行后的浏览器截图，来自临时 Anvil 链和测试代币。图中业务交付状态为模拟；截图没有替换文字、数值或检查结果。
+中英文图片来自同一次本地重复付款执行。每份 README 只放一张诊断摘要，截图未替换文字或数值。测试使用临时链与测试代币；应用交付为模拟。
 
-## Reproduce / 复现
-
-After `npm ci` and `npm run build`, run each command separately from the repository root:
+## Reproduce
 
 ```sh
-node dist/packages/cli/index.js run \
-  --case timeout-late-confirmation --driver local --out artifacts/timeout
+npm ci
+npm run build
 
-# Expected exit code: 1. The report is still generated.
+# Expected exit code 1: this case intentionally pays twice.
 node dist/packages/cli/index.js run \
-  --case duplicate-business-payment --driver local --out artifacts/duplicate
+  --case duplicate-business-payment --driver local --out artifacts/diagnostic-demo
+
+node dist/packages/cli/index.js diagnose \
+  --input artifacts/diagnostic-demo/findings.json \
+  --lang zh-CN --out artifacts/diagnostic-zh
 ```
 
-Open the generated `report.html` files in a browser. The first two images capture the report overview; the third captures the duplicate report's budget and findings section. Images retain the browser's normal viewport. Addresses, transaction hashes, digests, and gas costs change between runs because the accounts and chain are temporary.
+Open the two `report.html` files in a browser. Both show 2 confirmed payments, 0.02 test tokens debited, 4 failed checks, and 2 diagnostic groups. Captures were visually checked for readable guidance and absence of names, wallet addresses, and transaction hashes in the visible summary. The budget panel was expanded to verify its advice remains accessible.
 
-| Image                                            | Status             | Chain payments | Failed checks | Payer debit (atomic) |
-| ------------------------------------------------ | ------------------ | -------------- | ------------- | -------------------- |
-| [timeout-report.png](timeout-report.png)         | pass               | 1              | 0             | 10000                |
-| [duplicate-report.png](duplicate-report.png)     | fail               | 2              | 4             | 20000                |
-| [duplicate-findings.png](duplicate-findings.png) | same duplicate run | 2              | 4             | 20000                |
+- [English summary](diagnosis-en.png)
+- [中文摘要](diagnosis-zh-CN.png)
 
-Both local runs use 6-decimal test tokens. The screenshot overview does not show every field; scroll down in your report for the amount and evidence tables. All three saved images were visually checked for readable titles, counts, and findings.
+Source trace digest: `0xf637046f7889be4f65d504e4239937325249f964197a9931093523c5f6f49c43`.
 
-## Source trace digests / 来源记录摘要
+Renderer SHA-256: `da60c69a1a2f7095db15c78e3504af9ffc9857c7e0409282129cb2b44ffdf278`.
 
-- `timeout`: `0x53693aa30c50fd26c1cdd60f4bbbf0dbd474341e22348d79ac2f08a3ca1ee965`
-- `duplicate`: `0x14189f7080a0108bcf425779da5674f1846c7e019e9aa63d19fc51e651e40e00`
+Guide catalog SHA-256: `4d13ab908b2b8fb7abc136142bc8736f911ba2f70aa3bd8f93a2236347ed62c7`.

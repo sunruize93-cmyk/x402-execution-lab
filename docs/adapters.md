@@ -82,3 +82,29 @@ process.exitCode = reportExitCode(report);
 ```
 
 No npm release has been published. Install from this repository or a locally generated tarball. `checkTrace` is a pure offline consistency check: it does not fetch receipts, verify the truth of an imported source label, or move money. Input and output contracts are generated from the versioned JSON Schemas in `packages/contracts/`.
+
+## Diagnosis and report language
+
+`run` and `check` write four files: `trace.json`, `findings.json`, `diagnostics.json`, and `report.html`. `--lang en|zh-CN` selects the language for HTML and diagnostic guidance; default is English. Original findings, rule IDs, and evidence references are preserved.
+
+To diagnose an existing report without running any payments:
+
+```sh
+node dist/packages/cli/index.js diagnose \
+  --input artifacts/duplicate/findings.json --lang zh-CN --out artifacts/diagnosis
+```
+
+`diagnose` exits `0` when advice and HTML are successfully written, even if the source report is `fail`; this is not a conformance exit code. Use `check` for CI policy enforcement. Invalid report input or language exits `3`.
+
+The library equivalent is `diagnoseReport(report, 'zh-CN')`, exported from the package root. It returns advisory issue groups with affected rule IDs, evidence references, suggested checkpoints, and verification instructions. It preserves the source trace digest and source status. It neither reads application source code nor establishes a root cause beyond the supplied findings.
+
+The compact HTML puts the first issue's guidance on screen and keeps further issues, complete checks, fee details, and source context in expandable panels. **Collapsed content remains in the HTML file.** Redact imported descriptions and identifiers before sharing an exported report. README screenshots show only the compact diagnostic section.
+
+### 中文操作速查
+
+- `--driver local` 使用临时本地链。支持的 8 个场景为 `success`、`timeout-late-confirmation`、`duplicate-business-payment`、`repeated-authorization`、`verify-then-revert`、`tampered-authorization`、`expired-authorization`、`cancelled-authorization`。
+- `list` 列出 20 个脚本场景。其余场景用 `--driver scripted`；脚本记录不能证明合约执行约束，报告可能为 `inconclusive`。
+- `--allow-incomplete` 只放宽证据不足时的退出策略，不会把报告变成 `pass`；真实失败仍返回 `1`。
+- `diagnose` 生成诊断成功时返回 `0`，原报告的失败状态仍保留。CI 验证用 `check`：`0` 满足策略，`1` 违规，`2` 证据或必需规则覆盖不足，`3` 输入或执行错误。
+- 中文报告首页按代币小数位显示扣款金额；明细仍采用最小单位整数。本地代币 `10000` 最小单位等于 `0.01` 个测试代币，不是美元。Gas 单独以 wei 计量。
+- 修复应用后，重新触发对应故障，采集新的 trace，再运行 `check`。内置案例用于理解行为，不能代替应用集成验证。

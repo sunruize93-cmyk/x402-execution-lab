@@ -4,6 +4,8 @@ import { digest, jobHash } from './hash.js';
 import { replay } from './replay.js';
 import type { Finding, Report, Status, EnforcementLevel } from './types.js';
 export { digest, jobHash, replay };
+export { diagnoseReport } from './diagnostics.js';
+export type { Diagnostics, DiagnosticIssue, ReportLocale } from './diagnostics.js';
 export type * from './types.js';
 
 const same = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();

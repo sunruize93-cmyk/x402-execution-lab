@@ -52,3 +52,9 @@ Reorg obligations are tracked per transaction. A new nonce's confirmation cannot
 `signer_checked` describes checks an adapter performed while inspecting the signed authorization; it is not a restriction on arbitrary later off-chain behavior. The internal association, budget and application rules are `application_checked`. Fee proposal preferences are `advisory`; unsupported signature paths or fee executions stay unsupported/unknown. `onchain_enforced` is limited to the bundled test token's recognized runtime bytecode, deployment, chain, token identity, and applicable `transferWithAuthorization` call. It does not apply to the business job hash or an arbitrary max-markup field.
 
 Report status precedence is `fail > inconclusive > pass`. `not_applicable` is separate and not counted as evaluated coverage. `--allow-incomplete` only relaxes exit code 2. `--require-rule` requires all applicable findings for each named rule to pass and rejects missing rule IDs. The default rule set is `fees-and-settlement`; unknown rule-set names are errors.
+
+## Advisory diagnosis
+
+`diagnoseReport` derives an independent advisory document from an existing report. Only failed or inconclusive findings become issues. Related rules are grouped once, retaining their rule IDs and evidence references; groups containing a failure are repair investigations, while groups with only inconclusive findings request evidence. Unknown rules receive explicit generic investigation guidance rather than being dropped.
+
+Suggestions describe likely integration checkpoints, not confirmed code-level causes. The diagnosis does not alter findings, budget, settlement, or conformance exit policy. It runs without network access, model calls, source-code edits, or payment execution. Verification requires a new trace from the changed integration; it cannot be established by rerendering an old report or passing a separate bundled case.
