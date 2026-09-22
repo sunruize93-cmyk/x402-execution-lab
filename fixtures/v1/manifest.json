@@ -1,0 +1,217 @@
+[
+  {
+    "name": "success",
+    "matrixId": "S00",
+    "status": "inconclusive",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive"
+    ],
+    "traceDigest": "0xeecf9ed9fa1074b7df01d62c96375bbd6297d015724f76821c7b8548b22528b4"
+  },
+  {
+    "name": "expired-quote",
+    "matrixId": "Q01",
+    "status": "fail",
+    "findings": [
+      "Q_EXPIRY:fail",
+      "A_CONTRACT_ENFORCEMENT:inconclusive"
+    ],
+    "traceDigest": "0x656d8c06e9c433bf85a1247826c79cc01838a6759a114df7246db1aaded071f8"
+  },
+  {
+    "name": "identity-mismatch",
+    "matrixId": "Q02",
+    "status": "fail",
+    "findings": [
+      "Q_IDENTITY:fail",
+      "A_CONTRACT_ENFORCEMENT:inconclusive"
+    ],
+    "traceDigest": "0x8639e5ae1b3045d529ab0654842dca40a7765d2767afeee3d8b6336260ea9c24"
+  },
+  {
+    "name": "decimal-mismatch",
+    "matrixId": "Q03",
+    "status": "fail",
+    "findings": [
+      "Q_UNITS:fail",
+      "A_CONTRACT_ENFORCEMENT:inconclusive"
+    ],
+    "traceDigest": "0x4c66e95faf21c7f857767c8fdb1ddce7fc3697395f7445ee295094c3d9fe7e84"
+  },
+  {
+    "name": "merchant-fee-double-count",
+    "matrixId": "F01",
+    "status": "fail",
+    "findings": [
+      "F_PAYER_TOTAL:fail",
+      "A_CONTRACT_ENFORCEMENT:inconclusive"
+    ],
+    "traceDigest": "0xfe29a3c6ae7e9a0c74a50f355fb3cbab62f6e31a8ba7c525964521a426f18383"
+  },
+  {
+    "name": "undisclosed-fee",
+    "matrixId": "F02",
+    "status": "inconclusive",
+    "findings": [
+      "F_DISCLOSURE:inconclusive",
+      "F_PAYER_TOTAL:inconclusive",
+      "A_CONTRACT_ENFORCEMENT:inconclusive"
+    ],
+    "traceDigest": "0xb27f88e58ecfe0102406f40f399b0a38bcd8e35d3f90d62cb62a14fc14c9d15f"
+  },
+  {
+    "name": "tampered-authorization",
+    "matrixId": "A01",
+    "status": "fail",
+    "findings": [
+      "A_BINDING:fail",
+      "A_SIGNATURE:fail",
+      "A_CAP:fail",
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "B_UNRESERVED_SUBMISSION:fail"
+    ],
+    "traceDigest": "0xef5491b7a5012fc588864e13bcea6a3968f12cb246f63d388c5c62909744fd5f"
+  },
+  {
+    "name": "unsupported-signature",
+    "matrixId": "A02",
+    "status": "inconclusive",
+    "findings": [
+      "A_SCHEME:inconclusive",
+      "A_SIGNATURE:inconclusive",
+      "A_CONTRACT_ENFORCEMENT:inconclusive"
+    ],
+    "traceDigest": "0x0ff595fe671de2664ab9bda9f0bccf4a1a1bb909d65b1c5df769bc03b9f311a7"
+  },
+  {
+    "name": "verify-then-revert",
+    "matrixId": "X01",
+    "status": "inconclusive",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "X_BUSINESS_IDEMPOTENCY:inconclusive"
+    ],
+    "traceDigest": "0xfe3ee38d29361371e53e063d5755070b8f987ee2f99189283c9599a516d9cb5d"
+  },
+  {
+    "name": "timeout-late-confirmation",
+    "matrixId": "X02",
+    "status": "inconclusive",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive"
+    ],
+    "traceDigest": "0x17e9605793fd3d7469c4d17d36bc981f1704ce959a4216a0d912a2a9a45f3886"
+  },
+  {
+    "name": "duplicate-business-payment",
+    "matrixId": "X03",
+    "status": "fail",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "X_DUPLICATE_BUSINESS_PAYMENT:fail",
+      "B_UNRESERVED_SPEND:fail",
+      "X_BUSINESS_IDEMPOTENCY:fail"
+    ],
+    "traceDigest": "0x9d0216a1f6bea33d5a880c992580e4a23cd24b39e06299bb20ff0381ed4a3cd5"
+  },
+  {
+    "name": "repeated-authorization",
+    "matrixId": "X04",
+    "status": "inconclusive",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive"
+    ],
+    "traceDigest": "0xfd7ac92ea7f5b1224d8e05444b03dbc0ed909fa2b500d6f2506415743a3b1b90"
+  },
+  {
+    "name": "expiry-cancel-race",
+    "matrixId": "X05",
+    "status": "fail",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "B_UNSAFE_RELEASE:fail",
+      "A_CLOSURE_CONFLICT:fail",
+      "R_CONFIRMED_UNCOMMITTED:inconclusive"
+    ],
+    "traceDigest": "0xb09cfcf8aa692bc772f384330281378c960f27bc28e66636ecbfcc44c2ec4083"
+  },
+  {
+    "name": "gas-limit-as-cost",
+    "matrixId": "C01",
+    "status": "fail",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "C_GAS_MEASUREMENT:fail"
+    ],
+    "traceDigest": "0x232d977b4ce427188de54b2f476e47a3a61696c2f3d563ac1317edc8dde55250"
+  },
+  {
+    "name": "missing-chain-fee",
+    "matrixId": "C02",
+    "status": "inconclusive",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "C_CHAIN_FEES:inconclusive"
+    ],
+    "traceDigest": "0x8ec4be96a7d61671481d21956f68e5b0dfc9ba9a159f9b393b4b490fad368c0d"
+  },
+  {
+    "name": "refund-pending",
+    "matrixId": "R01",
+    "status": "inconclusive",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "R_REFUND_PENDING:inconclusive"
+    ],
+    "traceDigest": "0xa2069a169f76f5f5cf9e31c7e174ff6ae9ac4a00d8c03fc842e9a241fa090303"
+  },
+  {
+    "name": "confirmed-uncommitted",
+    "matrixId": "R02",
+    "status": "inconclusive",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "R_CONFIRMED_UNCOMMITTED:inconclusive"
+    ],
+    "traceDigest": "0x6d521e2ff6937bcee9598740615d658d2e1db06bcae5185df702ef79c64a913a"
+  },
+  {
+    "name": "unsafe-release",
+    "matrixId": "B01",
+    "status": "fail",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "B_UNSAFE_RELEASE:fail",
+      "X_UNRESOLVED:inconclusive",
+      "X_BUSINESS_IDEMPOTENCY:inconclusive",
+      "C_PRESENT:inconclusive"
+    ],
+    "traceDigest": "0x561c641f775c4f16df699803d34810de0ebd9aff7ec9c539a76dc18d8133ad4c"
+  },
+  {
+    "name": "reorg",
+    "matrixId": "X06",
+    "status": "inconclusive",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "X_REORG:inconclusive",
+      "X_UNRESOLVED:inconclusive",
+      "X_BUSINESS_IDEMPOTENCY:inconclusive"
+    ],
+    "traceDigest": "0x3083711926347eccc0897d8232bbc631458e1cfe2331af63fb0144356a42e6bc"
+  },
+  {
+    "name": "provider-only-confirmation",
+    "matrixId": "X07",
+    "status": "inconclusive",
+    "findings": [
+      "A_CONTRACT_ENFORCEMENT:inconclusive",
+      "X_CONFIRMATION_EVIDENCE:inconclusive",
+      "X_UNRESOLVED:inconclusive",
+      "X_BUSINESS_IDEMPOTENCY:inconclusive",
+      "C_DEBIT_CAP:inconclusive"
+    ],
+    "traceDigest": "0x74fe1e618d076abfb23b81e83c00085c40b4a9c1da701926998652c3cf6b8123"
+  }
+]

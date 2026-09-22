@@ -1,0 +1,69 @@
+{
+  "name": "x402-execution-lab",
+  "version": "0.1.0",
+  "description": "Offline x402 evidence conformance and reproducible local EIP-3009 execution",
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "x402-lab": "dist/packages/cli/index.js"
+  },
+  "exports": {
+    ".": "./dist/packages/core/index.js",
+    "./contracts": "./dist/packages/contracts/index.js",
+    "./adapters": "./dist/packages/adapters/index.js",
+    "./schema": "./packages/contracts/trace.schema.json"
+  },
+  "files": [
+    "dist/packages",
+    "packages/contracts/*.json",
+    "packages/local-driver/contracts",
+    "fixtures",
+    "docs",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "schema:generate": "node scripts/generate-types.mjs",
+    "schema:check": "node scripts/generate-types.mjs --check",
+    "fixtures:generate": "tsx scripts/generate-fixtures.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "test:local": "tsx --test tests/local/*.test.ts",
+    "lab": "tsx packages/cli/index.ts",
+    "check": "npm run schema:check && npm run typecheck && npm test && npm run build",
+    "prepack": "npm run build",
+    "contract:build": "node scripts/compile-token.mjs",
+    "contract:check": "node scripts/compile-token.mjs --check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "licenses:check": "node scripts/check-licenses.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sunruize93-cmyk/x402-execution-lab.git"
+  },
+  "dependencies": {
+    "@x402/core": "2.26.0",
+    "@x402/evm": "2.26.0",
+    "ajv": "8.20.0",
+    "canonicalize": "2.1.0",
+    "viem": "2.56.8"
+  },
+  "devDependencies": {
+    "@foundry-rs/anvil": "1.7.1",
+    "@types/node": "22.19.0",
+    "json-schema-to-typescript": "16.0.0",
+    "prettier": "3.6.2",
+    "solc": "0.8.37",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "tmp": "0.2.7"
+  }
+}

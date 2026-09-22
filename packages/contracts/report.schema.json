@@ -1,0 +1,501 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/sunruize93-cmyk/x402-execution-lab/schema/report-1.0.0",
+  "title": "Report",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "toolVersion": {
+      "const": "0.1.0"
+    },
+    "traceId": {
+      "type": "string"
+    },
+    "traceDigest": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{64}$"
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "network": {
+          "type": "string"
+        },
+        "tokenLabel": {
+          "type": "string"
+        },
+        "jobId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "adapter",
+        "revision",
+        "network",
+        "tokenLabel",
+        "jobId"
+      ]
+    },
+    "status": {
+      "$ref": "#/definitions/Status"
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "evaluated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pass": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fail": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "inconclusive": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "not_applicable": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "evaluated",
+        "pass",
+        "fail",
+        "inconclusive",
+        "not_applicable"
+      ]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Finding"
+      }
+    },
+    "replay": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "authorization": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "execution": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "application": {
+          "type": "string"
+        },
+        "settlement": {
+          "type": "string"
+        },
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "available": {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            "reserved": {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            "spent": {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            "refunds_received": {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            "conserved": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "available",
+            "reserved",
+            "spent",
+            "refunds_received",
+            "conserved"
+          ]
+        },
+        "journal": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JournalEntry"
+          }
+        },
+        "confirmedTransactions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "authorization",
+        "execution",
+        "application",
+        "settlement",
+        "budget",
+        "journal",
+        "confirmedTransactions"
+      ]
+    },
+    "fees": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "payerDebitAtomic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "merchantCreditAtomic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "merchantNetAtomic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "nativeGasCostAtomic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extraChainFeesAtomic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "costCoverage": {
+          "enum": [
+            "complete",
+            "partial",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "payerDebitAtomic",
+        "merchantCreditAtomic",
+        "merchantNetAtomic",
+        "nativeGasCostAtomic",
+        "extraChainFeesAtomic",
+        "costCoverage"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Evidence"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "toolVersion",
+    "traceId",
+    "traceDigest",
+    "scope",
+    "status",
+    "coverage",
+    "findings",
+    "replay",
+    "fees",
+    "evidence",
+    "limitations"
+  ],
+  "definitions": {
+    "Status": {
+      "enum": [
+        "pass",
+        "fail",
+        "inconclusive",
+        "not_applicable"
+      ]
+    },
+    "EnforcementLevel": {
+      "enum": [
+        "onchain_enforced",
+        "signer_checked",
+        "application_checked",
+        "advisory",
+        "unsupported",
+        "unknown"
+      ]
+    },
+    "Finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ruleId": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warning",
+            "info"
+          ]
+        },
+        "status": {
+          "$ref": "#/definitions/Status"
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "enforcement": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "level": {
+              "$ref": "#/definitions/EnforcementLevel"
+            },
+            "basis": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "level",
+            "basis"
+          ]
+        }
+      },
+      "required": [
+        "ruleId",
+        "severity",
+        "status",
+        "evidenceRefs",
+        "explanation",
+        "scope",
+        "enforcement"
+      ]
+    },
+    "JournalEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "eventId": {
+          "type": "string"
+        },
+        "debit": {
+          "enum": [
+            "available",
+            "reserved",
+            "spent"
+          ]
+        },
+        "credit": {
+          "enum": [
+            "available",
+            "reserved",
+            "spent",
+            "funding",
+            "refunds_received"
+          ]
+        },
+        "amountAtomic": {
+          "type": "string",
+          "pattern": "^-?(0|[1-9][0-9]*)$"
+        }
+      },
+      "required": [
+        "eventId",
+        "debit",
+        "credit",
+        "amountAtomic"
+      ]
+    },
+    "ReplayResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "authorization": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "execution": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "application": {
+          "type": "string"
+        },
+        "settlement": {
+          "type": "string"
+        },
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "available": {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            "reserved": {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            "spent": {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            "refunds_received": {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            },
+            "conserved": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "available",
+            "reserved",
+            "spent",
+            "refunds_received",
+            "conserved"
+          ]
+        },
+        "journal": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JournalEntry"
+          }
+        },
+        "confirmedTransactions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Finding"
+          }
+        }
+      },
+      "required": [
+        "authorization",
+        "execution",
+        "application",
+        "settlement",
+        "budget",
+        "journal",
+        "confirmedTransactions",
+        "findings"
+      ]
+    },
+    "Evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "provenance": {
+          "enum": [
+            "synthetic",
+            "local_chain",
+            "testnet_observed",
+            "mainnet_observed",
+            "provider_reported"
+          ]
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{64}$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "id",
+        "provenance",
+        "digest",
+        "description"
+      ]
+    }
+  }
+}

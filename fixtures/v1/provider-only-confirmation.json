@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "1.0.0",
+  "traceId": "provider-only-confirmation",
+  "adapter": {
+    "name": "scripted",
+    "revision": "fixtures-v1"
+  },
+  "tokenLabel": "local-test-token",
+  "capturedAt": 2000000400,
+  "confirmationPolicy": {
+    "minConfirmations": 1,
+    "chainSpecificFees": "none"
+  },
+  "initialBudgetAtomic": "50000",
+  "job": {
+    "schemaVersion": "1.0.0",
+    "jobId": "job-001",
+    "merchantId": "demo-merchant",
+    "network": "eip155:31337",
+    "assetId": "0x0000000000000000000000000000000000000064",
+    "decimals": 6,
+    "payee": "0x0000000000000000000000000000000000000002",
+    "serviceAmountAtomic": "10000",
+    "deadline": 2000000120
+  },
+  "quotes": [
+    {
+      "quoteId": "quote-001",
+      "jobHash": "0x2d0b124ffb79814b508758c617357c40afd6b6ddff6cc63faea9f0a65ef778bc",
+      "providerId": "scripted-provider",
+      "network": "eip155:31337",
+      "assetId": "0x0000000000000000000000000000000000000064",
+      "decimals": 6,
+      "payee": "0x0000000000000000000000000000000000000002",
+      "serviceAmountAtomic": "10000",
+      "feePayer": "merchant",
+      "feeComponents": [
+        {
+          "kind": "execution",
+          "payer": "merchant",
+          "assetId": "0x0000000000000000000000000000000000000064",
+          "amountAtomic": "1000",
+          "status": "paid",
+          "evidenceRef": "synthetic"
+        }
+      ],
+      "payerTotalMaxAtomic": "10000",
+      "expiresAt": 2000000090,
+      "failureFeePolicy": "none",
+      "sourceRevision": "scripted-v1",
+      "evidenceRef": "synthetic"
+    }
+  ],
+  "authorizations": [
+    {
+      "authorizationRef": "auth-001",
+      "jobId": "job-001",
+      "quoteId": "quote-001",
+      "scheme": "eip3009",
+      "fromAddress": "0x0000000000000000000000000000000000000001",
+      "payee": "0x0000000000000000000000000000000000000002",
+      "amountAtomic": "10000",
+      "nonce": "0x0000000000000000000000000000000000000000000000000000000000000065",
+      "domain": {
+        "name": "Local Test Token",
+        "version": "1",
+        "chainId": 31337,
+        "verifyingContract": "0x0000000000000000000000000000000000000064"
+      },
+      "validAfter": 1999999940,
+      "validBefore": 2000000300,
+      "signatureValid": true,
+      "observedAt": 2000000000,
+      "evidenceRef": "synthetic"
+    }
+  ],
+  "attempts": [
+    {
+      "attemptId": "attempt-001",
+      "jobId": "job-001",
+      "quoteId": "quote-001",
+      "authorizationRef": "auth-001",
+      "network": "eip155:31337",
+      "txHash": "0x00000000000000000000000000000000000000000000000000000000000000c9"
+    }
+  ],
+  "events": [
+    {
+      "id": "event-0",
+      "type": "quote_selected",
+      "at": 2000000000,
+      "evidenceRef": "synthetic",
+      "rawStatus": "quote_selected",
+      "quoteId": "quote-001"
+    },
+    {
+      "id": "event-1",
+      "type": "reserve",
+      "at": 2000000001,
+      "evidenceRef": "synthetic",
+      "rawStatus": "reserve",
+      "amountAtomic": "10000"
+    },
+    {
+      "id": "event-2",
+      "type": "submitted",
+      "at": 2000000002,
+      "evidenceRef": "synthetic",
+      "rawStatus": "submitted",
+      "attemptId": "attempt-001"
+    },
+    {
+      "id": "event-5",
+      "type": "chain_confirmed",
+      "at": 2000000005,
+      "evidenceRef": "synthetic",
+      "rawStatus": "chain_confirmed",
+      "attemptId": "attempt-001",
+      "block": {
+        "number": 3,
+        "hash": "0x0000000000000000000000000000000000000000000000000000000000000003",
+        "confirmations": 1,
+        "canonical": true
+      }
+    }
+  ],
+  "costs": [
+    {
+      "attemptId": "attempt-001",
+      "gasUsed": "55000",
+      "gasLimit": "100000",
+      "effectiveGasPrice": "1000000000",
+      "gasMeasurement": "receipt",
+      "extraChainFeesAtomic": null,
+      "extraChainFeesStatus": "not_applicable",
+      "actualDebitAtomic": "10000",
+      "actualCreditAtomic": "10000",
+      "assetId": "0x0000000000000000000000000000000000000064",
+      "network": "eip155:31337",
+      "evidenceRef": "synthetic"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "synthetic",
+      "provenance": "provider_reported",
+      "digest": "0x611f9ed46e7ac165888bfc3ac17e7c0ab01c3214a6cec1af401bd76487890678",
+      "description": "Scripted scenario, not a wallet signature or an observed chain transaction."
+    }
+  ],
+  "deployments": []
+}

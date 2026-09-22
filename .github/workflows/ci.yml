@@ -1,0 +1,35 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run test:local
+      - run: npm run contract:check
+      - run: npm run format:check
+      - run: npm run licenses:check
+      - run: npm audit --audit-level=high
+      - run: git diff --check
+      - run: npm pack --dry-run
+      - run: node dist/packages/cli/index.js run --case timeout-late-confirmation --driver local --out artifacts/local-timeout
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidence-node-${{ matrix.node }}
+          path: artifacts/
+          if-no-files-found: ignore

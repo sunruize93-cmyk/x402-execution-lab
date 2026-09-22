@@ -1,0 +1,987 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/sunruize93-cmyk/x402-execution-lab/schema/trace-1.0.0",
+  "title": "ExecutionTrace",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "traceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "name",
+        "revision"
+      ]
+    },
+    "tokenLabel": {
+      "enum": [
+        "local-test-token",
+        "external-asset"
+      ]
+    },
+    "capturedAt": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "confirmationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minConfirmations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "chainSpecificFees": {
+          "enum": [
+            "none",
+            "required",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "minConfirmations",
+        "chainSpecificFees"
+      ]
+    },
+    "initialBudgetAtomic": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,77})$"
+    },
+    "job": {
+      "$ref": "#/definitions/PaymentJob"
+    },
+    "quotes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ExecutionQuote"
+      },
+      "maxItems": 10000
+    },
+    "authorizations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AuthorizationEvidence"
+      },
+      "maxItems": 10000
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ExecutionAttempt"
+      },
+      "maxItems": 10000
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ExecutionEvent"
+      },
+      "maxItems": 10000
+    },
+    "costs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CostEvidence"
+      },
+      "maxItems": 10000
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Evidence"
+      },
+      "maxItems": 10000
+    },
+    "deployments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/DeploymentEvidence"
+      },
+      "maxItems": 10000
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "traceId",
+    "adapter",
+    "tokenLabel",
+    "capturedAt",
+    "confirmationPolicy",
+    "initialBudgetAtomic",
+    "job",
+    "quotes",
+    "authorizations",
+    "attempts",
+    "events",
+    "costs",
+    "evidence",
+    "deployments"
+  ],
+  "definitions": {
+    "PaymentJob": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "jobId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "merchantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "network": {
+          "type": "string",
+          "pattern": "^eip155:[1-9][0-9]*$"
+        },
+        "assetId": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
+        },
+        "decimals": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "payee": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
+        },
+        "serviceAmountAtomic": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,77})$"
+        },
+        "deadline": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "jobId",
+        "merchantId",
+        "network",
+        "assetId",
+        "decimals",
+        "payee",
+        "serviceAmountAtomic",
+        "deadline"
+      ]
+    },
+    "FeeComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "execution",
+            "service",
+            "markup"
+          ]
+        },
+        "payer": {
+          "enum": [
+            "payer",
+            "merchant",
+            "provider",
+            "unknown"
+          ]
+        },
+        "assetId": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
+        },
+        "amountAtomic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,77})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "quoted",
+            "paid",
+            "unknown"
+          ]
+        },
+        "evidenceRef": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "payer",
+        "assetId",
+        "amountAtomic",
+        "status",
+        "evidenceRef"
+      ]
+    },
+    "ExecutionQuote": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "quoteId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "jobHash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{64}$"
+        },
+        "providerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "network": {
+          "type": "string",
+          "pattern": "^eip155:[1-9][0-9]*$"
+        },
+        "assetId": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
+        },
+        "decimals": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "payee": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
+        },
+        "serviceAmountAtomic": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,77})$"
+        },
+        "feePayer": {
+          "enum": [
+            "payer",
+            "merchant",
+            "provider",
+            "unknown"
+          ]
+        },
+        "feeComponents": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/FeeComponent"
+              },
+              "maxItems": 10000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payerTotalMaxAtomic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,77})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expiresAt": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "failureFeePolicy": {
+          "enum": [
+            "none",
+            "charged",
+            "unknown"
+          ]
+        },
+        "sourceRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "evidenceRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "quoteId",
+        "jobHash",
+        "providerId",
+        "network",
+        "assetId",
+        "decimals",
+        "payee",
+        "serviceAmountAtomic",
+        "feePayer",
+        "feeComponents",
+        "payerTotalMaxAtomic",
+        "expiresAt",
+        "failureFeePolicy",
+        "sourceRevision",
+        "evidenceRef"
+      ]
+    },
+    "AuthorizationEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "authorizationRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "jobId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "quoteId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "scheme": {
+          "enum": [
+            "eip3009",
+            "unsupported"
+          ]
+        },
+        "fromAddress": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
+        },
+        "payee": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
+        },
+        "amountAtomic": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,77})$"
+        },
+        "nonce": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{64}$"
+        },
+        "domain": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "chainId": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "verifyingContract": {
+              "type": "string",
+              "pattern": "^0x[0-9a-fA-F]{40}$"
+            }
+          },
+          "required": [
+            "name",
+            "version",
+            "chainId",
+            "verifyingContract"
+          ]
+        },
+        "validAfter": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "validBefore": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "signatureValid": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedAt": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "evidenceRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "authorizationRef",
+        "jobId",
+        "quoteId",
+        "scheme",
+        "fromAddress",
+        "payee",
+        "amountAtomic",
+        "nonce",
+        "domain",
+        "validAfter",
+        "validBefore",
+        "signatureValid",
+        "observedAt",
+        "evidenceRef"
+      ]
+    },
+    "ExecutionAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attemptId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "jobId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "quoteId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "authorizationRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "network": {
+          "type": "string",
+          "pattern": "^eip155:[1-9][0-9]*$"
+        },
+        "txHash": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^0x[0-9a-fA-F]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "attemptId",
+        "jobId",
+        "quoteId",
+        "authorizationRef",
+        "network",
+        "txHash"
+      ]
+    },
+    "Evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "provenance": {
+          "enum": [
+            "synthetic",
+            "local_chain",
+            "testnet_observed",
+            "mainnet_observed",
+            "provider_reported"
+          ]
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{64}$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "id",
+        "provenance",
+        "digest",
+        "description"
+      ]
+    },
+    "BlockEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "number": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{64}$"
+        },
+        "confirmations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "canonical": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "number",
+        "hash",
+        "confirmations",
+        "canonical"
+      ]
+    },
+    "ClosureEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "enum": [
+            "expired",
+            "cancelled"
+          ]
+        },
+        "blockTimestamp": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "nonceUnused": {
+          "type": "boolean"
+        },
+        "pendingAttemptsReconciled": {
+          "type": "boolean"
+        },
+        "block": {
+          "$ref": "#/definitions/BlockEvidence"
+        }
+      },
+      "required": [
+        "reason",
+        "blockTimestamp",
+        "nonceUnused",
+        "pendingAttemptsReconciled",
+        "block"
+      ]
+    },
+    "ExecutionEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "type": {
+          "enum": [
+            "quote_selected",
+            "reserve",
+            "submitted",
+            "submission_unknown",
+            "verify_success",
+            "chain_confirmed",
+            "chain_failed",
+            "reorg",
+            "authorization_closed",
+            "delivered",
+            "inventory_committed",
+            "application_failed",
+            "release",
+            "refund_promised",
+            "refund_received"
+          ]
+        },
+        "at": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "evidenceRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "attemptId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "authorizationRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "amountAtomic": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,77})$"
+        },
+        "block": {
+          "$ref": "#/definitions/BlockEvidence"
+        },
+        "closure": {
+          "$ref": "#/definitions/ClosureEvidence"
+        },
+        "rawStatus": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "quoteId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "transactionHash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{64}$"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "at",
+        "evidenceRef",
+        "rawStatus"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "submitted",
+                  "submission_unknown",
+                  "verify_success",
+                  "chain_confirmed",
+                  "chain_failed",
+                  "reorg"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "attemptId"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "chain_confirmed",
+                  "chain_failed",
+                  "reorg",
+                  "refund_received"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "block"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "reserve",
+                  "release",
+                  "refund_received",
+                  "refund_promised"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "amountAtomic"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "authorization_closed"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "authorizationRef",
+              "closure"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "quote_selected"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "quoteId"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "refund_received"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "transactionHash"
+            ]
+          }
+        }
+      ]
+    },
+    "CostEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attemptId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "gasUsed": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,77})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gasLimit": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,77})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effectiveGasPrice": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,77})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gasMeasurement": {
+          "enum": [
+            "receipt",
+            "gas_limit",
+            "unknown"
+          ]
+        },
+        "extraChainFeesAtomic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,77})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extraChainFeesStatus": {
+          "enum": [
+            "complete",
+            "not_applicable",
+            "unknown"
+          ]
+        },
+        "actualDebitAtomic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,77})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actualCreditAtomic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,77})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assetId": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
+        },
+        "network": {
+          "type": "string",
+          "pattern": "^eip155:[1-9][0-9]*$"
+        },
+        "evidenceRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "attemptId",
+        "gasUsed",
+        "gasLimit",
+        "effectiveGasPrice",
+        "gasMeasurement",
+        "extraChainFeesAtomic",
+        "extraChainFeesStatus",
+        "actualDebitAtomic",
+        "actualCreditAtomic",
+        "assetId",
+        "network",
+        "evidenceRef"
+      ]
+    },
+    "DeploymentEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "network": {
+          "type": "string",
+          "pattern": "^eip155:[1-9][0-9]*$"
+        },
+        "contract": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
+        },
+        "codeHash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{64}$"
+        },
+        "transactionHash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{64}$"
+        },
+        "evidenceRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "call": {
+          "enum": [
+            "transferWithAuthorization"
+          ]
+        }
+      },
+      "required": [
+        "network",
+        "contract",
+        "codeHash",
+        "transactionHash",
+        "evidenceRef",
+        "call"
+      ]
+    }
+  }
+}

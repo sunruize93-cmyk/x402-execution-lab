@@ -1,0 +1,12 @@
+node_modules
+dist
+artifacts
+package-lock.json
+packages/contracts/generated.ts
+packages/contracts/report-generated.ts
+packages/contracts/*.schema.json
+packages/local-driver/contracts/artifact.json
+fixtures/v1
+examples/*.json
+examples/*.jsonl
+docs/design-v1.zh-CN.md

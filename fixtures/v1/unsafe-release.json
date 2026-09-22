@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "1.0.0",
+  "traceId": "unsafe-release",
+  "adapter": {
+    "name": "scripted",
+    "revision": "fixtures-v1"
+  },
+  "tokenLabel": "local-test-token",
+  "capturedAt": 2000000400,
+  "confirmationPolicy": {
+    "minConfirmations": 1,
+    "chainSpecificFees": "none"
+  },
+  "initialBudgetAtomic": "50000",
+  "job": {
+    "schemaVersion": "1.0.0",
+    "jobId": "job-001",
+    "merchantId": "demo-merchant",
+    "network": "eip155:31337",
+    "assetId": "0x0000000000000000000000000000000000000064",
+    "decimals": 6,
+    "payee": "0x0000000000000000000000000000000000000002",
+    "serviceAmountAtomic": "10000",
+    "deadline": 2000000120
+  },
+  "quotes": [
+    {
+      "quoteId": "quote-001",
+      "jobHash": "0x2d0b124ffb79814b508758c617357c40afd6b6ddff6cc63faea9f0a65ef778bc",
+      "providerId": "scripted-provider",
+      "network": "eip155:31337",
+      "assetId": "0x0000000000000000000000000000000000000064",
+      "decimals": 6,
+      "payee": "0x0000000000000000000000000000000000000002",
+      "serviceAmountAtomic": "10000",
+      "feePayer": "merchant",
+      "feeComponents": [
+        {
+          "kind": "execution",
+          "payer": "merchant",
+          "assetId": "0x0000000000000000000000000000000000000064",
+          "amountAtomic": "1000",
+          "status": "paid",
+          "evidenceRef": "synthetic"
+        }
+      ],
+      "payerTotalMaxAtomic": "10000",
+      "expiresAt": 2000000090,
+      "failureFeePolicy": "none",
+      "sourceRevision": "scripted-v1",
+      "evidenceRef": "synthetic"
+    }
+  ],
+  "authorizations": [
+    {
+      "authorizationRef": "auth-001",
+      "jobId": "job-001",
+      "quoteId": "quote-001",
+      "scheme": "eip3009",
+      "fromAddress": "0x0000000000000000000000000000000000000001",
+      "payee": "0x0000000000000000000000000000000000000002",
+      "amountAtomic": "10000",
+      "nonce": "0x0000000000000000000000000000000000000000000000000000000000000065",
+      "domain": {
+        "name": "Local Test Token",
+        "version": "1",
+        "chainId": 31337,
+        "verifyingContract": "0x0000000000000000000000000000000000000064"
+      },
+      "validAfter": 1999999940,
+      "validBefore": 2000000300,
+      "signatureValid": true,
+      "observedAt": 2000000000,
+      "evidenceRef": "synthetic"
+    }
+  ],
+  "attempts": [
+    {
+      "attemptId": "attempt-001",
+      "jobId": "job-001",
+      "quoteId": "quote-001",
+      "authorizationRef": "auth-001",
+      "network": "eip155:31337",
+      "txHash": null
+    }
+  ],
+  "events": [
+    {
+      "id": "event-0",
+      "type": "quote_selected",
+      "at": 2000000000,
+      "evidenceRef": "synthetic",
+      "rawStatus": "quote_selected",
+      "quoteId": "quote-001"
+    },
+    {
+      "id": "event-1",
+      "type": "reserve",
+      "at": 2000000001,
+      "evidenceRef": "synthetic",
+      "rawStatus": "reserve",
+      "amountAtomic": "10000"
+    },
+    {
+      "id": "event-2",
+      "type": "submitted",
+      "at": 2000000002,
+      "evidenceRef": "synthetic",
+      "rawStatus": "submitted",
+      "attemptId": "attempt-001"
+    },
+    {
+      "id": "event-3",
+      "type": "submission_unknown",
+      "at": 2000000003,
+      "evidenceRef": "synthetic",
+      "rawStatus": "submission_unknown",
+      "attemptId": "attempt-001"
+    },
+    {
+      "id": "event-4",
+      "type": "release",
+      "at": 2000000004,
+      "evidenceRef": "synthetic",
+      "rawStatus": "release",
+      "amountAtomic": "10000"
+    }
+  ],
+  "costs": [],
+  "evidence": [
+    {
+      "id": "synthetic",
+      "provenance": "synthetic",
+      "digest": "0x2d0654c051e6c64b8b7f75e1d8f45c32492f756bfed346c5783d1e8e35ea9426",
+      "description": "Scripted scenario, not a wallet signature or an observed chain transaction."
+    }
+  ],
+  "deployments": []
+}
