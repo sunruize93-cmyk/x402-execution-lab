@@ -18,6 +18,8 @@ Each fee component records who pays, asset, amount, and whether it is quoted or 
 
 Balances are per-attempt deltas observed in isolation by the local driver. A captured production delta must not include unrelated concurrent transfers. Same-transaction retry observations are deduplicated; conflicting observations fail. Failed transactions may have native gas but cannot have token transfer debit/credit.
 
+Cost evidence is resolved by network and transaction identity across retry aliases before booking the journal. Missing costs for failed transactions, pending receipts, or orphaned receipts make aggregate chain costs unknown. If a reported successful exact transfer's debit differs from its authorization, the actual debit remains recorded, the mismatch fails, and business completion requires reconciliation. Unknown component fee responsibility keeps merchant net unknown.
+
 ## State and budget
 
 The event reducer never initiates a payment. A provider-reported confirmation or failure cannot move the chain projection. Synthetic fixtures may move a **simulated** projection and always retain synthetic labels. Canonical block evidence must meet `minConfirmations`; this is a policy threshold, not absolute economic finality.
@@ -40,6 +42,8 @@ The double-entry journal uses these transfers:
 Release requires **every authorization** to be consumed or proven closed and no unresolved reorg. A closure includes a canonical block, signed-validity comparison for expiration, nonce-unused observation, and an explicit assertion that pending attempts have been reconciled. Cancellation means a confirmed cancellation with no transfer, not a request to cancel. A failed transaction or the local clock alone is insufficient. The offline checker relies on the adapter for the truth of these closure observations.
 
 A payment reorg invalidates confirmation, reverses spending to reserved, and invalidates the application completion projection. It never changes real external inventory. Reconciliation requires fresh chain evidence. Reorg history remains visible even after later confirmation.
+
+Reorg obligations are tracked per transaction. A new nonce's confirmation cannot resolve another transaction's reorg. Reconfirmation or failure reconciles all retry aliases of the affected transaction; conflicting success/failure observations without an intervening reorg fail in either order.
 
 `inventory_committed` requires an application delivery followed by an application commit **and** a chain-confirmed payment. The local driver's application events are simulated; only its token execution is chain-observed. `confirmed-uncommitted` must not be displayed as completed business settlement.
 

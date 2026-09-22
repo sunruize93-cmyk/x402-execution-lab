@@ -25,8 +25,14 @@ export function replay(trace: ExecutionTrace): ReplayResult {
   const evidence = new Map(trace.evidence.map((x) => [x.id, x]));
   const attempts = new Map(trace.attempts.map((x) => [x.attemptId, x]));
   const auths = new Map(trace.authorizations.map((x) => [x.authorizationRef, x]));
-  const costs = new Map(trace.costs.map((x) => [x.attemptId, x]));
   const canObserve = (ref: string) => evidence.get(ref)?.provenance !== 'provider_reported';
+  // Resolve final supplied cost evidence by transaction before replay, including retry aliases.
+  const costsByTransaction = new Map<string, (typeof trace.costs)[number]>();
+  for (const cost of trace.costs) {
+    const attempt = attempts.get(cost.attemptId)!;
+    if (attempt.txHash && canObserve(cost.evidenceRef))
+      costsByTransaction.set(`${attempt.network}:${attempt.txHash.toLowerCase()}`, cost);
+  }
   const finalBlock = (b: BlockEvidence | undefined) =>
     !!b && b.canonical && b.confirmations >= trace.confirmationPolicy.minConfirmations;
   const balances = { available: 0n, reserved: 0n, spent: 0n, refunds_received: 0n, funding: 0n };
@@ -51,9 +57,12 @@ export function replay(trace: ExecutionTrace): ReplayResult {
   const execution = Object.fromEntries(trace.attempts.map((a) => [a.attemptId, 'not_submitted']));
   const successes = new Map<string, { amount: bigint; auth: string; nonceKey: string }>();
   const refunds = new Set<string>();
+  const failedTransactions = new Set<string>();
+  const unresolvedReorgs = new Set<string>();
   let application = 'not_delivered';
   let promised = 0n;
-  let reconciliation = false;
+  let evidenceConflict = false;
+  const needsReconciliation = () => evidenceConflict || unresolvedReorgs.size > 0;
   let hadSubmission = false;
   for (const e of trace.events) {
     const attempt = e.attemptId ? attempts.get(e.attemptId)! : undefined;
@@ -100,6 +109,16 @@ export function replay(trace: ExecutionTrace): ReplayResult {
               e,
             );
           execution[attempt!.attemptId] = 'chain_confirmed';
+          unresolvedReorgs.delete(key);
+          break;
+        }
+        if (failedTransactions.has(key)) {
+          note(
+            'X_CONFLICTING_RECEIPT',
+            'A failed transaction cannot confirm successfully without an intervening reorg.',
+            e,
+          );
+          evidenceConflict = true;
           break;
         }
         const nonceKey = `${auth!.domain.chainId}:${auth!.domain.verifyingContract.toLowerCase()}:${auth!.fromAddress.toLowerCase()}:${auth!.nonce.toLowerCase()}`;
@@ -115,11 +134,19 @@ export function replay(trace: ExecutionTrace): ReplayResult {
             'This business job has more than one confirmed payment, even if both authorizations are independently valid.',
             e,
           );
-        const cost = costs.get(attempt!.attemptId);
+        const cost = costsByTransaction.get(key);
         const amount =
           cost?.actualDebitAtomic != null && canObserve(cost.evidenceRef)
             ? BigInt(cost.actualDebitAtomic)
             : BigInt(auth!.amountAtomic);
+        if (cost?.actualDebitAtomic != null && amount !== BigInt(auth!.amountAtomic)) {
+          note(
+            'C_EXACT_DEBIT',
+            'Observed debit disagrees with the supported exact-transfer authorization; record the debit but require reconciliation.',
+            e,
+          );
+          evidenceConflict = true;
+        }
         const reserved = balances.reserved < amount ? balances.reserved : amount;
         if (reserved > 0n) post(e.id, 'spent', 'reserved', reserved);
         if (amount > reserved) {
@@ -131,20 +158,35 @@ export function replay(trace: ExecutionTrace): ReplayResult {
           post(e.id, 'spent', 'available', amount - reserved);
         }
         successes.set(key, { amount, auth: auth!.authorizationRef, nonceKey });
-        execution[attempt!.attemptId] = 'chain_confirmed';
+        for (const alias of trace.attempts.filter(
+          (a) =>
+            a.network === attempt!.network &&
+            a.txHash?.toLowerCase() === attempt!.txHash?.toLowerCase(),
+        ))
+          execution[alias.attemptId] = 'chain_confirmed';
         authorization[auth!.authorizationRef] = 'consumed';
-        reconciliation = false;
+        unresolvedReorgs.delete(key);
         break;
       }
       case 'chain_failed':
-        if (canObserve(e.evidenceRef) && finalBlock(e.block)) {
-          if (key && successes.has(key))
+        if (canObserve(e.evidenceRef) && key && finalBlock(e.block)) {
+          if (successes.has(key)) {
             note(
               'X_CONFLICTING_RECEIPT',
               'A confirmed transaction cannot fail without a reorg reconciliation.',
               e,
             );
-          else execution[attempt!.attemptId] = 'chain_failed';
+            evidenceConflict = true;
+          } else {
+            for (const alias of trace.attempts.filter(
+              (a) =>
+                a.network === attempt!.network &&
+                a.txHash?.toLowerCase() === attempt!.txHash?.toLowerCase(),
+            ))
+              execution[alias.attemptId] = 'chain_failed';
+            failedTransactions.add(key);
+            unresolvedReorgs.delete(key);
+          }
         } else
           note(
             'X_FAILURE_EVIDENCE',
@@ -161,18 +203,26 @@ export function replay(trace: ExecutionTrace): ReplayResult {
             e,
             'inconclusive',
           );
-          reconciliation = true;
+          unresolvedReorgs.add(key ?? attempt!.attemptId);
           break;
         }
         const prior = key && successes.get(key);
+        if (key) failedTransactions.delete(key);
         if (prior) {
           post(e.id, 'reserved', 'spent', prior.amount);
           successes.delete(key!);
           authorization[prior.auth] = 'unknown';
         }
-        execution[attempt!.attemptId] = 'unresolved';
+        for (const alias of trace.attempts.filter(
+          (a) =>
+            a.attemptId === attempt!.attemptId ||
+            (key &&
+              a.network === attempt!.network &&
+              a.txHash?.toLowerCase() === attempt!.txHash?.toLowerCase()),
+        ))
+          execution[alias.attemptId] = 'unresolved';
         application = 'reconciliation';
-        reconciliation = true;
+        unresolvedReorgs.add(key ?? attempt!.attemptId);
         note(
           'X_REORG',
           'Old confirmation invalidated; budget returned to reserved pending reconciliation.',
@@ -202,6 +252,11 @@ export function replay(trace: ExecutionTrace): ReplayResult {
           for (const attempt of trace.attempts.filter(
             (x) => x.authorizationRef === a.authorizationRef,
           )) {
+            unresolvedReorgs.delete(
+              attempt.txHash
+                ? `${attempt.network}:${attempt.txHash.toLowerCase()}`
+                : attempt.attemptId,
+            );
             if (
               ['submitted', 'submission_unknown', 'unresolved'].includes(
                 execution[attempt.attemptId]!,
@@ -223,7 +278,11 @@ export function replay(trace: ExecutionTrace): ReplayResult {
           trace.authorizations.every((a) =>
             ['expired', 'cancelled', 'consumed'].includes(authorization[a.authorizationRef]!),
           );
-        if (!allClosed || reconciliation || (!hadSubmission && trace.authorizations.length === 0))
+        if (
+          !allClosed ||
+          needsReconciliation() ||
+          (!hadSubmission && trace.authorizations.length === 0)
+        )
           note(
             'B_UNSAFE_RELEASE',
             'Reservation remains locked until every authorization is consumed or safely closed and reconciliation is complete.',
@@ -238,7 +297,7 @@ export function replay(trace: ExecutionTrace): ReplayResult {
         if (application !== 'inventory_committed') application = 'delivered';
         break;
       case 'inventory_committed':
-        if (!successes.size || reconciliation || application !== 'delivered')
+        if (!successes.size || needsReconciliation() || application !== 'delivered')
           note(
             'X_PREMATURE_COMMIT',
             'Inventory commit lacks confirmed payment and prior delivery.',
@@ -289,7 +348,7 @@ export function replay(trace: ExecutionTrace): ReplayResult {
       anchor,
       'inconclusive',
     );
-  const settlement = reconciliation
+  const settlement = needsReconciliation()
     ? 'reconciliation'
     : successes.size
       ? application === 'inventory_committed'

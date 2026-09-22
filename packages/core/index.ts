@@ -350,11 +350,26 @@ export function checkTrace(input: unknown): Report {
   }
   if (!trace.costs.length)
     add('C_PRESENT', 'inconclusive', 'No receipt or balance-delta costs supplied.', job.jobId, []);
-  if (uniqueCosts.length < state.confirmedTransactions.length)
+  const expectedReceipts = new Set(
+    trace.attempts
+      .filter(
+        (a) =>
+          a.txHash && ['chain_confirmed', 'chain_failed'].includes(state.execution[a.attemptId]!),
+      )
+      .map((a) => `${a.network}:${a.txHash!.toLowerCase()}`),
+  );
+  const costReceipts = new Set(
+    trace.costs.map((c) => {
+      const a = trace.attempts.find((a) => a.attemptId === c.attemptId)!;
+      return `${a.network}:${a.txHash?.toLowerCase()}`;
+    }),
+  );
+  const missingReceipt = [...expectedReceipts].some((key) => !costReceipts.has(key));
+  if (missingReceipt)
     add(
       'C_MISSING_RECEIPT',
       'inconclusive',
-      'A confirmed payment lacks cost and balance-delta evidence.',
+      'A canonical successful or failed transaction lacks receipt cost evidence.',
       job.jobId,
       [],
     );
@@ -375,7 +390,12 @@ export function checkTrace(input: unknown): Report {
     (q) => q.feeComponents?.filter((f) => f.payer === 'merchant') ?? [],
   );
   const merchantKnown =
-    activeQuotes.every((q) => q.feeComponents !== null && q.feePayer !== 'unknown') &&
+    activeQuotes.every(
+      (q) =>
+        q.feeComponents !== null &&
+        q.feePayer !== 'unknown' &&
+        q.feeComponents.every((f) => f.payer !== 'unknown'),
+    ) &&
     merchantFees.every(
       (f) =>
         f.status === 'paid' &&
@@ -392,26 +412,44 @@ export function checkTrace(input: unknown): Report {
       }),
     ).values(),
   ];
-  const native = total(
-    receiptCosts.map((c) =>
-      observed(c.evidenceRef) &&
-      c.gasMeasurement === 'receipt' &&
-      c.gasUsed !== null &&
-      c.effectiveGasPrice !== null
-        ? (BigInt(c.gasUsed) * BigInt(c.effectiveGasPrice)).toString()
-        : null,
-    ),
-  );
-  const extra = total(
-    receiptCosts.map((c) =>
-      c.extraChainFeesStatus === 'not_applicable' &&
-      trace.confirmationPolicy.chainSpecificFees === 'none'
-        ? '0'
-        : c.extraChainFeesStatus === 'complete' && observed(c.evidenceRef)
-          ? c.extraChainFeesAtomic
-          : null,
-    ),
-  );
+  const unsettledCost = receiptCosts.some((c) => {
+    const a = trace.attempts.find((x) => x.attemptId === c.attemptId)!;
+    return !a.txHash || !expectedReceipts.has(`${a.network}:${a.txHash.toLowerCase()}`);
+  });
+  if (unsettledCost)
+    add(
+      'C_UNRESOLVED_RECEIPT',
+      'inconclusive',
+      'A cost record lacks a current canonical receipt outcome; orphaned or pending costs are not verified totals.',
+      job.jobId,
+      receiptCosts.map((c) => c.evidenceRef),
+    );
+  const native =
+    missingReceipt || unsettledCost
+      ? null
+      : total(
+          receiptCosts.map((c) =>
+            observed(c.evidenceRef) &&
+            c.gasMeasurement === 'receipt' &&
+            c.gasUsed !== null &&
+            c.effectiveGasPrice !== null
+              ? (BigInt(c.gasUsed) * BigInt(c.effectiveGasPrice)).toString()
+              : null,
+          ),
+        );
+  const extra =
+    missingReceipt || unsettledCost
+      ? null
+      : total(
+          receiptCosts.map((c) =>
+            c.extraChainFeesStatus === 'not_applicable' &&
+            trace.confirmationPolicy.chainSpecificFees === 'none'
+              ? '0'
+              : c.extraChainFeesStatus === 'complete' && observed(c.evidenceRef)
+                ? c.extraChainFeesAtomic
+                : null,
+          ),
+        );
   const coverage = {
     evaluated: findings.filter((f) => f.status !== 'not_applicable').length,
     pass: 0,
@@ -433,12 +471,22 @@ export function checkTrace(input: unknown): Report {
       network: job.network,
       tokenLabel: trace.tokenLabel,
       jobId: job.jobId,
+      assetId: job.assetId,
+      decimals: job.decimals,
+      payee: job.payee,
     },
     status: coverage.fail ? 'fail' : coverage.inconclusive ? 'inconclusive' : 'pass',
     coverage,
     findings,
     replay: projection,
     fees: {
+      allocations: trace.quotes.map((q) => ({
+        quoteId: q.quoteId,
+        providerId: q.providerId,
+        sourceRevision: q.sourceRevision,
+        feePayer: q.feePayer,
+        components: q.feeComponents,
+      })),
       payerDebitAtomic: debit,
       merchantCreditAtomic: credit,
       merchantNetAtomic:

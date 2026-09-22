@@ -36,6 +36,17 @@
         },
         "jobId": {
           "type": "string"
+        },
+        "assetId": {
+          "type": "string"
+        },
+        "decimals": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "payee": {
+          "type": "string"
         }
       },
       "required": [
@@ -43,7 +54,10 @@
         "revision",
         "network",
         "tokenLabel",
-        "jobId"
+        "jobId",
+        "assetId",
+        "decimals",
+        "payee"
       ]
     },
     "status": {
@@ -230,6 +244,52 @@
             "partial",
             "unknown"
           ]
+        },
+        "allocations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "quoteId": {
+                "type": "string"
+              },
+              "providerId": {
+                "type": "string"
+              },
+              "sourceRevision": {
+                "type": "string"
+              },
+              "feePayer": {
+                "enum": [
+                  "payer",
+                  "merchant",
+                  "provider",
+                  "unknown"
+                ]
+              },
+              "components": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/FeeComponent"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "quoteId",
+              "providerId",
+              "sourceRevision",
+              "feePayer",
+              "components"
+            ]
+          }
         }
       },
       "required": [
@@ -238,7 +298,8 @@
         "merchantNetAtomic",
         "nativeGasCostAtomic",
         "extraChainFeesAtomic",
-        "costCoverage"
+        "costCoverage",
+        "allocations"
       ]
     },
     "evidence": {
@@ -495,6 +556,69 @@
         "provenance",
         "digest",
         "description"
+      ]
+    },
+    "FeeComponent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "execution",
+            "service",
+            "markup"
+          ]
+        },
+        "payer": {
+          "enum": [
+            "payer",
+            "merchant",
+            "provider",
+            "unknown"
+          ]
+        },
+        "assetId": {
+          "type": "string",
+          "pattern": "^0x[0-9a-fA-F]{40}$"
+        },
+        "amountAtomic": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,77})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "quoted",
+            "paid",
+            "unknown"
+          ]
+        },
+        "evidenceRef": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "payer",
+        "assetId",
+        "amountAtomic",
+        "status",
+        "evidenceRef"
       ]
     }
   }

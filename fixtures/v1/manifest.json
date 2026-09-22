@@ -68,7 +68,9 @@
       "A_SIGNATURE:fail",
       "A_CAP:fail",
       "A_CONTRACT_ENFORCEMENT:inconclusive",
-      "B_UNRESERVED_SUBMISSION:fail"
+      "B_UNRESERVED_SUBMISSION:fail",
+      "C_EXACT_DEBIT:fail",
+      "X_PREMATURE_COMMIT:fail"
     ],
     "traceDigest": "0xef5491b7a5012fc588864e13bcea6a3968f12cb246f63d388c5c62909744fd5f"
   },
@@ -197,7 +199,8 @@
       "A_CONTRACT_ENFORCEMENT:inconclusive",
       "X_REORG:inconclusive",
       "X_UNRESOLVED:inconclusive",
-      "X_BUSINESS_IDEMPOTENCY:inconclusive"
+      "X_BUSINESS_IDEMPOTENCY:inconclusive",
+      "C_UNRESOLVED_RECEIPT:inconclusive"
     ],
     "traceDigest": "0x3083711926347eccc0897d8232bbc631458e1cfe2331af63fb0144356a42e6bc"
   },
@@ -210,7 +213,8 @@
       "X_CONFIRMATION_EVIDENCE:inconclusive",
       "X_UNRESOLVED:inconclusive",
       "X_BUSINESS_IDEMPOTENCY:inconclusive",
-      "C_DEBIT_CAP:inconclusive"
+      "C_DEBIT_CAP:inconclusive",
+      "C_UNRESOLVED_RECEIPT:inconclusive"
     ],
     "traceDigest": "0x74fe1e618d076abfb23b81e83c00085c40b4a9c1da701926998652c3cf6b8123"
   }

@@ -23,6 +23,9 @@ export interface Report {
     network: string;
     tokenLabel: string;
     jobId: string;
+    assetId: string;
+    decimals: number;
+    payee: string;
   };
   status: Status;
   coverage: {
@@ -59,6 +62,13 @@ export interface Report {
     nativeGasCostAtomic: string | null;
     extraChainFeesAtomic: string | null;
     costCoverage: "complete" | "partial" | "unknown";
+    allocations: {
+      quoteId: string;
+      providerId: string;
+      sourceRevision: string;
+      feePayer: "payer" | "merchant" | "provider" | "unknown";
+      components: FeeComponent[] | null;
+    }[];
   };
   evidence: Evidence[];
   limitations: string[];
@@ -88,6 +98,18 @@ export interface JournalEntry {
   debit: "available" | "reserved" | "spent";
   credit: "available" | "reserved" | "spent" | "funding" | "refunds_received";
   amountAtomic: string;
+}
+/**
+ * This interface was referenced by `Report`'s JSON-Schema
+ * via the `definition` "FeeComponent".
+ */
+export interface FeeComponent {
+  kind: "execution" | "service" | "markup";
+  payer: "payer" | "merchant" | "provider" | "unknown";
+  assetId: string;
+  amountAtomic: string | null;
+  status: "quoted" | "paid" | "unknown";
+  evidenceRef: string | null;
 }
 /**
  * This interface was referenced by `Report`'s JSON-Schema
