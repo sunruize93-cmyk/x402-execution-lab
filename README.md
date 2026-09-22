@@ -4,9 +4,15 @@
 
 [![CI](https://github.com/sunruize93-cmyk/x402-execution-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/sunruize93-cmyk/x402-execution-lab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[中文说明](docs/README.zh-CN.md)
+**[中文上手指南 →](docs/README.zh-CN.md)** · [Quick start](#try-the-timeout-example) · [Reading the report](#reading-the-report)
+
+**中文简介：** 在本地复现 AI 支付故障，看清钱付了几次、费用由谁承担。[中文指南](docs/README.zh-CN.md)包含完整安装步骤、真实报告截图、字段解释和项目接入方法。
 
 A free, open-source tool for testing AI payments on your own computer. Try a payment timeout, an accidental double payment, or a fee mistake using test money. Get a readable report showing what happened.
+
+![Local timeout report: 21 checks pass and only one chain payment is confirmed](docs/images/timeout-report.png)
+
+_Captured from a real local run with test tokens. The request times out, the original transaction is reconciled, and only one payment is confirmed. Application delivery is simulated._
 
 ## Why I built it
 
@@ -35,7 +41,7 @@ Choose a test → Run it locally with test money → Open the report
 | The fees do not add up                   | Who pays each fee, and does the debit match the agreed amount? |
 | Money moves, but delivery fails          | Was payment confirmed while the service remained unfinished?   |
 
-You get **20 ready-made scenarios**, a local test environment, and reports you can open in a browser or check automatically in your build.
+You get **20 scripted scenarios**, **8 local execution scenarios**, and reports you can open in a browser or check automatically in your build. Scripted cases use synthetic records; local cases execute test transactions. See the [coverage matrix](docs/compatibility.md) for the two sets.
 
 Use it when adding x402 payments, changing retry behavior, or investigating a recorded payment. The same failure case can be rerun after a fix and shared with another developer.
 
@@ -55,7 +61,20 @@ node dist/packages/cli/index.js run \
 
 This example sends a test payment, interrupts the response, and then checks the original payment's result. It should finish with **one payment, charged once**.
 
-Open **`artifacts/timeout/report.html`** in your browser. The report shows the amount paid, who covers the fees, the payment status, and any checks that failed or still need evidence. JSON files are saved alongside it for automated checks.
+Open **`artifacts/timeout/report.html`** in your browser. No web server or account is needed:
+
+```sh
+open artifacts/timeout/report.html      # macOS
+# xdg-open artifacts/timeout/report.html  # Linux desktop
+```
+
+A headless machine can save the output directory for viewing on your desktop. You should see `PASS`, 21 passing checks, and `Chain payments = 1`.
+
+| Output          | Use it to…                                             |
+| --------------- | ------------------------------------------------------ |
+| `report.html`   | Inspect payment, fees, and findings in a browser       |
+| `findings.json` | Read the check results from another program or CI      |
+| `trace.json`    | Recheck this execution offline or share a reproduction |
 
 Want to see it catch a mistake? Run the duplicate-payment example:
 
@@ -64,7 +83,46 @@ node dist/packages/cli/index.js run \
   --case duplicate-business-payment --driver local --out artifacts/duplicate
 ```
 
-That example deliberately pays twice for one job. **A `FAIL` result is expected:** the lab has detected the mistake. Open `artifacts/duplicate/report.html` to see why.
+That example deliberately pays twice for one job. **A `FAIL` result and exit code `1` are expected:** the lab has detected the mistake. The report is still written to `artifacts/duplicate/report.html`.
+
+![Duplicate-payment report: four checks fail and two chain payments are confirmed](docs/images/duplicate-report.png)
+
+Scroll to **Needs attention** for the explanation. `X_BUSINESS_IDEMPOTENCY` checks whether one job was paid more than once, even when both authorizations are individually valid. This case also exposes missing budget reservations.
+
+<details>
+<summary>Show the findings and budget ledger</summary>
+
+![Duplicate-payment findings and the budget ledger showing 20000 spent](docs/images/duplicate-findings.png)
+
+</details>
+
+## Reading the report
+
+| Field                               | Meaning                                                                     |
+| ----------------------------------- | --------------------------------------------------------------------------- |
+| `pass` / `fail` / `inconclusive`    | Supplied evidence satisfies the checks / violates a check / is insufficient |
+| `Chain payments`                    | Distinct confirmed transactions; check for duplicate payments first         |
+| `Payer debit` / `Merchant credit`   | Observed token amount paid / received                                       |
+| `Native gas (wei)`                  | Native-chain execution cost, recorded separately from payment tokens        |
+| `available` / `reserved` / `spent`  | Unallocated budget / held budget / consumed budget                          |
+| `Needs attention` / `Rule coverage` | Problems to inspect / all findings and their evidence references            |
+
+Amounts use integer atomic units: this local token has 6 decimals, so `10000` is **0.01 test tokens**, not dollars. The duplicate case spends `20000`. Native gas uses a different asset and unit; it cannot be added directly to the token amount.
+
+Screenshots show actual local runs. Temporary addresses and gas costs vary on reruns; the expected payment counts and check outcomes are the useful comparison. See [screenshot provenance](docs/images/README.md).
+
+## Use it with your project
+
+Start by rechecking the trace you just generated:
+
+```sh
+node dist/packages/cli/index.js check \
+  --trace artifacts/timeout/trace.json --out artifacts/recheck
+```
+
+Then map your application's quotes, authorizations, attempts, receipts, and business states to the [trace schema](packages/contracts/trace.schema.json). This tool expects a lab trace, not arbitrary provider logs. The [adapters guide](docs/adapters.md) explains SDK helpers and JSONL import.
+
+`check` is offline and does not send payments. Default exit codes are `0` for a satisfied policy, `1` for a failed check, `2` for incomplete evidence, and `3` for invalid input or runner errors. Running a built-in scenario does not connect to or modify your app; capturing your own trace is the integration step.
 
 ## What works today
 
