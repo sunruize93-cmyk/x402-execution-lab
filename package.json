@@ -1,9 +1,9 @@
 {
   "name": "x402-execution-lab",
   "version": "0.1.0",
-  "description": "Offline x402 evidence conformance and reproducible local EIP-3009 execution",
+  "description": "Local tests for x402 payment timeouts, duplicate payments, and fees",
   "type": "module",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "engines": {
     "node": ">=22"
   },

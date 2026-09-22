@@ -1,16 +1,47 @@
 # x402 Execution Lab
 
+**Test what happens when an AI payment goes wrong.**
+
 [![CI](https://github.com/sunruize93-cmyk/x402-execution-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/sunruize93-cmyk/x402-execution-lab/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[中文说明](docs/README.zh-CN.md)
 
-Check whether an x402 quote, payment authorization, observed debit, and settlement evidence agree. Reproduce payment failures locally without funding a real wallet.
+A free, open-source tool for testing AI payments on your own computer. Try a payment timeout, an accidental double payment, or a fee mistake using test money. Get a readable report showing what happened.
 
-The first case is a payment that **broadcasts successfully, times out over HTTP, and confirms later**. The lab keeps the original authorization and its budget reservation. A different nonce may be valid on-chain and still double-pay the same business job; the checker reports that difference.
+## Why I built it
 
-**v0.1.0 — local MVP.** One offline checker, one CLI, versioned JSON Schemas and fixtures, and a real x402 SDK / Anvil execution driver. This is not a facilitator marketplace, wallet, payment protocol, or security certification. No npm release has been published.
+Imagine a payment screen gets stuck. You try again. Later, you discover you paid twice.
 
-## Quick start
+Software can make the same mistake. A payment request may time out **after the money has already moved**. If an app starts another payment, it could pay for the same purchase twice.
 
-Node.js 22 or 24, npm, and macOS/Linux are the supported development environment. The pinned Anvil npm dependency supplies the local chain binary; no separate Foundry installation is needed.
+I built this lab to make these cases easy to reproduce, inspect, and test before connecting real funds.
+
+## Where x402 fits
+
+[x402](https://x402.org/) lets software pay for an online service as part of a web request. For example, an AI agent could pay to fetch a piece of data.
+
+Execution Lab gives developers a place to test what happens around that payment, especially when something goes wrong.
+
+```text
+Choose a test → Run it locally with test money → Open the report
+```
+
+## What can I check?
+
+| What happens                             | What the lab helps you check                                   |
+| ---------------------------------------- | -------------------------------------------------------------- |
+| A payment request times out              | Did the original payment eventually go through?                |
+| The app pays again for the same purchase | Were there two successful payments for one job?                |
+| The fees do not add up                   | Who pays each fee, and does the debit match the agreed amount? |
+| Money moves, but delivery fails          | Was payment confirmed while the service remained unfinished?   |
+
+You get **20 ready-made scenarios**, a local test environment, and reports you can open in a browser or check automatically in your build.
+
+Use it when adding x402 payments, changing retry behavior, or investigating a recorded payment. The same failure case can be rerun after a fix and shared with another developer.
+
+## Try the timeout example
+
+You need **Node.js 22 or 24** and npm on macOS or Linux. No funded wallet or separate blockchain installation is needed.
 
 ```sh
 git clone https://github.com/sunruize93-cmyk/x402-execution-lab.git
@@ -18,81 +49,46 @@ cd x402-execution-lab
 npm ci
 npm run build
 
-# Real SDK signatures and transactions on an owned, disposable Anvil chain.
 node dist/packages/cli/index.js run \
   --case timeout-late-confirmation --driver local --out artifacts/timeout
 ```
 
-The run writes `trace.json`, `findings.json`, and a standalone `report.html`. Open the HTML file in your browser. The expected local result is `PASS`, one confirmed payment, `spent: 10000`, and `reserved: 0`.
+This example sends a test payment, interrupts the response, and then checks the original payment's result. It should finish with **one payment, charged once**.
+
+Open **`artifacts/timeout/report.html`** in your browser. The report shows the amount paid, who covers the fees, the payment status, and any checks that failed or still need evidence. JSON files are saved alongside it for automated checks.
+
+Want to see it catch a mistake? Run the duplicate-payment example:
 
 ```sh
-# Offline, deterministic replay — no RPC or wallet.
-npm run lab -- run --case timeout-late-confirmation --driver scripted \
-  --allow-incomplete --out artifacts/scripted
-
-# Negative fixture: two legitimate token transfers pay one job twice. Exits 1.
-npm run lab -- run --case duplicate-business-payment --driver local \
-  --out artifacts/duplicate
-
-# Check captured evidence, or regenerate HTML from a report.
-npm run lab -- check --trace fixtures/v1/timeout-late-confirmation.json \
-  --rules fees-and-settlement --allow-incomplete
-npm run lab -- report --input artifacts/timeout/findings.json \
-  --format html --output artifacts/timeout/report.html
+node dist/packages/cli/index.js run \
+  --case duplicate-business-payment --driver local --out artifacts/duplicate
 ```
 
-Scripted fixtures cannot establish contract enforcement, so their otherwise conformant reports remain **inconclusive**. `--allow-incomplete` changes the exit policy, never the report's findings or provenance.
+That example deliberately pays twice for one job. **A `FAIL` result is expected:** the lab has detected the mistake. Open `artifacts/duplicate/report.html` to see why.
 
-## What the report separates
+## What works today
 
-| Dimension     | Examples                                                                      |
-| ------------- | ----------------------------------------------------------------------------- |
-| Authorization | valid, consumed, expired, cancelled, unknown                                  |
-| Execution     | submitted, submission_unknown, chain_confirmed, chain_failed, unresolved      |
-| Application   | not_delivered, delivered, inventory_committed, reconciliation                 |
-| Budget        | available, reserved, spent, refunds_received                                  |
-| Evidence      | synthetic, local_chain, testnet_observed, mainnet_observed, provider_reported |
+**v0.1** includes local payment execution and a checker for saved payment records. The local driver runs real x402 SDK signatures and transactions on a temporary blockchain with test tokens. Delivery in the demo is simulated.
 
-Amounts are atomic integer strings and calculations use `bigint`. Merchant-paid fees and facilitator native gas are separate from the payer's token debit. Missing fees, chain-specific costs, and merchant invoice evidence remain unknown. A refund promise does not reduce actual spending.
+The checker reports inconsistencies; your application owns the fix. Testing public payment providers and production funds remains separate work. See the [compatibility list](docs/compatibility.md) for the exact coverage.
 
-Every finding has an evidence reference, scope, status, and enforcement level. An identified local token bytecode and deployment can support `onchain_enforced` for its EIP-3009 call. Signature correctness alone cannot. Offline imports trust their stated evidence origin; they do not independently authenticate a chain or provider.
+## For developers
 
-## CI and library use
+| I want to…                                                       | Start here                              |
+| ---------------------------------------------------------------- | --------------------------------------- |
+| Check my own payment records, use the CLI, or import the library | [Usage and adapters](docs/adapters.md)  |
+| Understand how fees, refunds, and payment states are checked     | [Rules and evidence](docs/semantics.md) |
+| See the test matrix and supported versions                       | [Compatibility](docs/compatibility.md)  |
+| Add a case or run the full test suite                            | [Contributing](CONTRIBUTING.md)         |
 
 ```sh
-npm run check           # schema drift, types, offline tests, build
-npm run test:local      # actual SDK + EIP-3009 + HTTP + Anvil integration tests
-npm run contract:check  # reproduce the committed local token bytecode
-npm run format:check
-
-# Explicitly allow missing coverage but require these rules to pass.
-npm run lab -- check --trace fixtures/v1/timeout-late-confirmation.json \
-  --allow-incomplete --require-rule Q_IDENTITY,Q_UNITS,X_BUSINESS_IDEMPOTENCY
+npm run check       # Types, offline tests, and build
+npm run test:local  # Real SDK + local blockchain tests
 ```
 
-Exit codes: **0** satisfies the selected policy; **1** conformance failure; **2** incomplete evidence / required coverage missing; **3** invalid input or runner error. `--require-rule` never silently accepts an unknown rule ID.
+**Have a payment failure worth testing?** [Open an issue](https://github.com/sunruize93-cmyk/x402-execution-lab/issues) with a small, sanitized example. If the lab is useful to you, a star helps other developers find it.
 
-```ts
-import { checkTrace, reportExitCode } from 'x402-execution-lab';
-import { parseTrace } from 'x402-execution-lab/contracts';
 
-const report = checkTrace(parseTrace(capturedJson));
-process.exitCode = reportExitCode(report);
-```
+## License
 
-The import example works after installing a locally built tarball (`npm pack`), or once a package is separately published. The GitHub checkout and CLI above work today.
-
-## Repository
-
-```text
-packages/contracts/     JSON Schemas and generated TypeScript contracts
-packages/core/          pure rules, hashing, double-entry ledger and replay
-packages/adapters/      x402 exact EVM, pinned fee proposal, Arena export
-packages/local-driver/  owned Anvil + test token, scripted provider
-packages/cli/           run, check, report, import-arena
-fixtures/v1/            positive/negative traces and expected manifest
-examples/               JSONL and integration examples
-docs/                   semantics, adapters, compatibility and design
-```
-
-Read [semantics](docs/semantics.md), [adapter integration](docs/adapters.md), [compatibility](docs/compatibility.md), [中文说明](docs/README.zh-CN.md), and the [original design](docs/design-v1.zh-CN.md). The original design is historical; the compatibility page records the implemented scope. Contributions follow [CONTRIBUTING.md](CONTRIBUTING.md). Code, original fixtures, and documentation are Apache-2.0 licensed; see [NOTICE](NOTICE).
+[MIT](LICENSE). You can use, modify, and share this project's code under that license. Dependencies retain their own licenses; see [NOTICE](NOTICE).

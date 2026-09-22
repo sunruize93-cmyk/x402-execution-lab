@@ -4,6 +4,7 @@
 
 - 日期／版本：2026-09-22，design-v1。
 - 状态：设计方案；尚未创建仓库、实现代码、发布包或完成生产接入。
+- 实现后更新：仓库现已实现本地 MVP，并按维护者要求改用 MIT 许可证；本文保留初始设计记录，第 13 节的 Apache-2.0 为当时的建议。当前范围见 [兼容性清单](compatibility.md)，许可见 [LICENSE](../LICENSE)。
 - 对应候选：x402 quote / receipt conformance + local test environment。
 - 建议仓库名：`x402-execution-lab`，名称占用未核实。
 - 一句话：**让开发者在本地检查一笔 x402 支付的报价、授权、实际扣款与结算证据是否一致。**

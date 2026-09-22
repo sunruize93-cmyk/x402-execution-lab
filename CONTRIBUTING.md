@@ -28,4 +28,17 @@ Keep regression tests behavior-focused. New negative fixtures should identify a 
 
 ## Contributions and licensing
 
-Open an issue with a minimal sanitized trace and expected behavior, or submit a focused pull request. Do not file live secrets or replayable payment authorizations. Contributions are under Apache-2.0. Original fixtures share that license; imported third-party traces need permission and provenance.
+Open an issue with a minimal sanitized trace and expected behavior, or submit a focused pull request. Do not file live secrets or replayable payment authorizations. Contributions are under MIT. Original fixtures share that license; imported third-party traces need permission and provenance.
+
+## Repository layout
+
+```text
+packages/contracts/     JSON Schemas and generated TypeScript contracts
+packages/core/          pure rules, hashing, double-entry ledger and replay
+packages/adapters/      x402 exact EVM, pinned fee proposal, Arena export
+packages/local-driver/  owned Anvil + test token, scripted provider
+packages/cli/           run, check, report, import-arena
+fixtures/v1/            positive/negative traces and expected manifest
+examples/               JSONL and integration examples
+docs/                   semantics, adapters, compatibility and design
+```

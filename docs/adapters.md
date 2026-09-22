@@ -39,3 +39,46 @@ The abbreviated `trace` must in practice contain every required trace field. See
 `check --trace file.jsonl` uses an explicit lab stream format, not arbitrary provider logs. The first line is `{ "type": "trace", "trace": <metadata with events: []> }`. Remaining lines are `{ "type": "event", "event": <one schema-valid event> }`. See [timeout.jsonl](../examples/timeout.jsonl). Standard JSON traces are equally supported.
 
 An adapter should map events, preserve raw status and provenance, and call `parseTrace()` before returning. It must not silently manufacture missing fees, confirmation blocks, contract identities, or refund receipts.
+
+## CLI and automated checks
+
+The default check runs every rule in `fees-and-settlement`. It reads local files only; it does not contact a chain or send a payment.
+
+```sh
+# List the supplied scenarios.
+npm run lab -- list
+
+# Run an entirely scripted case, with no blockchain process.
+npm run lab -- run --case timeout-late-confirmation --driver scripted \
+  --allow-incomplete --out artifacts/scripted
+
+# Check an existing JSON or JSONL trace.
+npm run lab -- check --trace fixtures/v1/timeout-late-confirmation.json \
+  --rules fees-and-settlement --allow-incomplete
+
+# Allow incomplete coverage overall, but require these named rules to pass.
+npm run lab -- check --trace fixtures/v1/timeout-late-confirmation.json \
+  --allow-incomplete --require-rule Q_IDENTITY,Q_UNITS,X_BUSINESS_IDEMPOTENCY
+
+# Rebuild HTML from a saved JSON report.
+npm run lab -- report --input artifacts/timeout/findings.json \
+  --format html --output artifacts/timeout/report.html
+```
+
+Exit codes: **0** satisfies the selected policy; **1** conformance failure; **2** incomplete evidence or required coverage missing; **3** invalid input or runner error. Unknown rule IDs are never silently accepted.
+
+Scripted cases cannot prove contract enforcement. Their otherwise conformant reports remain `inconclusive`. `--allow-incomplete` relaxes exit code 2; it does not turn missing evidence into a passing check.
+
+## Library use
+
+After installing a locally built tarball (`npm pack`), import the checker:
+
+```ts
+import { checkTrace, reportExitCode } from 'x402-execution-lab';
+import { parseTrace } from 'x402-execution-lab/contracts';
+
+const report = checkTrace(parseTrace(capturedJson));
+process.exitCode = reportExitCode(report);
+```
+
+No npm release has been published. Install from this repository or a locally generated tarball. `checkTrace` is a pure offline consistency check: it does not fetch receipts, verify the truth of an imported source label, or move money. Input and output contracts are generated from the versioned JSON Schemas in `packages/contracts/`.
