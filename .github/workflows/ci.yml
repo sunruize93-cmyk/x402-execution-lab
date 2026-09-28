@@ -1,0 +1,27 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.10', '3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -e '.[dev]'
+      - run: ruff check src tests scripts examples
+      - run: pytest -q
+      - run: python scripts/check_docs.py
+      - run: python scripts/generate_assets.py && git diff --exit-code -- src/aeb/data
+      - run: python -m build
+      - run: python -m venv /tmp/aeb-wheel && /tmp/aeb-wheel/bin/pip install dist/*.whl
+      - run: cd /tmp && /tmp/aeb-wheel/bin/aeb run --scenario late-unknown-dev --out /tmp/aeb-smoke
+      - run: /tmp/aeb-wheel/bin/aeb verify --episode /tmp/aeb-smoke/episodes/late-unknown-dev--seed-7
+      - run: git diff --check

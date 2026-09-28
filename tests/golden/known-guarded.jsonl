@@ -1,0 +1,12 @@
+{"data":{"budget":2500,"drain_epochs":10,"episode_id":"late-known-dev-7-guarded","epochs":10,"fee_rule":"on_submission","scenario_id":"late-known-dev","seed":7,"source":"synthetic","track":"guarded","unit":"simulated-atomic"},"epoch":0,"sequence":0,"type":"episode_started"}
+{"data":{"allowed_providers":[],"amount":300,"arrival":0,"deadline":9,"delay_cost":10,"failure_cost":0,"id":"purchase","non_execution_cost":0,"value":700},"epoch":0,"sequence":1,"type":"job_arrived"}
+{"data":{"postings":[{"account":"buyer.available","delta":-320},{"account":"buyer.reserved","delta":320}],"reason":"reserve"},"epoch":0,"sequence":2,"type":"ledger"}
+{"data":{"amount":300,"attempt_id":"attempt-1","fee":20,"job_id":"purchase","provider_id":"provider-2","started_epoch":0},"epoch":0,"sequence":3,"type":"reserved"}
+{"data":{"attempt_id":"attempt-1","job_id":"purchase","postings":[{"account":"buyer.reserved","delta":-20},{"account":"provider-2.available","delta":20}],"reason":"execution_fee"},"epoch":0,"sequence":4,"type":"ledger"}
+{"data":{"attempt_id":"attempt-1","job_id":"purchase","postings":[{"account":"provider-2.available","delta":-5},{"account":"network.available","delta":5}],"reason":"network_cost"},"epoch":0,"sequence":5,"type":"ledger"}
+{"data":{"attempt_id":"attempt-1"},"epoch":0,"sequence":6,"type":"submitted"}
+{"data":{"attempt_id":"attempt-1"},"epoch":1,"sequence":7,"type":"query_pending"}
+{"data":{"attempt_id":"attempt-1","job_id":"purchase","postings":[{"account":"buyer.reserved","delta":-300},{"account":"merchant.available","delta":300}],"reason":"service_payment"},"epoch":2,"sequence":8,"type":"ledger"}
+{"data":{"attempt_id":"attempt-1","job_id":"purchase","provider_id":"provider-2"},"epoch":2,"sequence":9,"type":"chain_confirmed"}
+{"data":{"attempt_id":"attempt-1","delivered_epoch":2,"job_id":"purchase","provider_id":"provider-2"},"epoch":2,"sequence":10,"type":"service_delivered"}
+{"data":{"pending_events":0},"epoch":20,"sequence":11,"type":"episode_finished"}

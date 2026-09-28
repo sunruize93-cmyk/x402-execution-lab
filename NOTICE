@@ -1,0 +1,13 @@
+Arena Execution Bench
+Copyright 2026 Arena Execution Bench contributors
+
+Licensed under the Apache License, Version 2.0.
+See the accompanying LICENSE file for the full terms.
+
+Original code, documentation, generated synthetic scenarios, and golden traces
+in this repository are licensed under Apache-2.0. The scenarios are synthetic;
+their prices and reliability parameters do not describe real providers.
+
+No implementation or scenario data from Magentic Marketplace, x402, Arena 402,
+or an execution-lab release is bundled. Runtime/development dependencies retain
+their own licenses. No external testnet trace is included in version 0.1.0.

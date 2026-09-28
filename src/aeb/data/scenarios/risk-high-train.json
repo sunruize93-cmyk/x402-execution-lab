@@ -1,0 +1,70 @@
+{
+  "schema_version": "aeb-provisional-0.1",
+  "split": "train",
+  "epochs": 10,
+  "drain_epochs": 10,
+  "budget": 5000,
+  "knowledge": "public",
+  "fee_rule": "on_submission",
+  "representation": "structured",
+  "identity_salt": 0,
+  "future_jobs_visible": true,
+  "initial_history": [],
+  "id": "risk-high-train",
+  "world_id": "risk-train",
+  "family": "risk",
+  "providers": [
+    {
+      "id": "cheap",
+      "fee": 400,
+      "failure_ppm": 100000,
+      "unknown_ppm": 0,
+      "rejection_ppm": 0,
+      "confirmation_delay": 1,
+      "visibility_delay": 0,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    },
+    {
+      "id": "balanced",
+      "fee": 420,
+      "failure_ppm": 1000,
+      "unknown_ppm": 0,
+      "rejection_ppm": 0,
+      "confirmation_delay": 1,
+      "visibility_delay": 0,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    },
+    {
+      "id": "premium",
+      "fee": 500,
+      "failure_ppm": 0,
+      "unknown_ppm": 0,
+      "rejection_ppm": 0,
+      "confirmation_delay": 1,
+      "visibility_delay": 0,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    }
+  ],
+  "jobs": [
+    {
+      "id": "procure",
+      "arrival": 0,
+      "deadline": 9,
+      "amount": 1000,
+      "value": 1000,
+      "failure_cost": 380,
+      "non_execution_cost": 2000,
+      "delay_cost": 10,
+      "allowed_providers": []
+    }
+  ]
+}

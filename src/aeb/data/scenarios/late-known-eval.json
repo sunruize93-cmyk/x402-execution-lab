@@ -1,0 +1,70 @@
+{
+  "schema_version": "aeb-provisional-0.1",
+  "split": "eval",
+  "epochs": 10,
+  "drain_epochs": 10,
+  "budget": 2500,
+  "knowledge": "public",
+  "fee_rule": "on_submission",
+  "representation": "structured",
+  "identity_salt": 0,
+  "future_jobs_visible": true,
+  "initial_history": [],
+  "id": "late-known-eval",
+  "world_id": "late-eval",
+  "family": "late-confirmation",
+  "providers": [
+    {
+      "id": "cheap",
+      "fee": 20,
+      "failure_ppm": 0,
+      "unknown_ppm": 0,
+      "rejection_ppm": 0,
+      "confirmation_delay": 2,
+      "visibility_delay": 2,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    },
+    {
+      "id": "balanced",
+      "fee": 30,
+      "failure_ppm": 0,
+      "unknown_ppm": 0,
+      "rejection_ppm": 0,
+      "confirmation_delay": 2,
+      "visibility_delay": 2,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    },
+    {
+      "id": "premium",
+      "fee": 40,
+      "failure_ppm": 0,
+      "unknown_ppm": 0,
+      "rejection_ppm": 0,
+      "confirmation_delay": 2,
+      "visibility_delay": 2,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    }
+  ],
+  "jobs": [
+    {
+      "id": "purchase",
+      "arrival": 0,
+      "deadline": 9,
+      "amount": 300,
+      "value": 735,
+      "failure_cost": 0,
+      "non_execution_cost": 0,
+      "delay_cost": 10,
+      "allowed_providers": []
+    }
+  ]
+}
