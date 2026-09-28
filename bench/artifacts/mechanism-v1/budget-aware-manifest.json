@@ -1,0 +1,80 @@
+{
+  "decision_coverage_complete": true,
+  "decision_granularity": "epoch-batch",
+  "dependencies": {
+    "attrs": "26.1.0",
+    "jsonschema": "4.26.0",
+    "referencing": "0.37.0",
+    "rpds-py": "2026.6.3"
+  },
+  "engine_digest": "a152a339e58c0f9ae9dd7af0bf66fe79651fc61d4850a4b2878d4c22ac74d7dc",
+  "engine_version": "0.1.0",
+  "model": null,
+  "policy": "budget-aware",
+  "policy_version": "0.1.0",
+  "python": "3.11.15",
+  "scenarios": [
+    {
+      "digest": "601e5820cffbc4b2a1326ac38497649fb0d6ae73880bf8eface7350158a60076",
+      "id": "late-known-dev",
+      "split": "dev",
+      "world_id": "late-dev"
+    },
+    {
+      "digest": "f4c284609485f2f07b4a3757df3e7c1526d138ac75d4646899b519a248ba210f",
+      "id": "late-unknown-dev",
+      "split": "dev",
+      "world_id": "late-dev"
+    },
+    {
+      "digest": "26a8444b35ffb2cf5a6dca0be4d57a743fe82d62c612adbf207ab12e4f312e2f",
+      "id": "liquidity-locked-dev",
+      "split": "dev",
+      "world_id": "liquidity-dev"
+    },
+    {
+      "digest": "7a1821906aa99a2d5abe74a59457a129b6c2d8591b19dafbba82a57258e42a64",
+      "id": "liquidity-released-dev",
+      "split": "dev",
+      "world_id": "liquidity-dev"
+    },
+    {
+      "digest": "e32cf37a50254658324714c3d6ecc50ae2896597209d07cbaf4b2cf833037e6f",
+      "id": "mixed-hidden-dev",
+      "split": "dev",
+      "world_id": "mixed-dev"
+    },
+    {
+      "digest": "a96ee75f5ca44c07759c7369f308d954413084bd54315de4da1fce869d4f3455",
+      "id": "mixed-public-dev",
+      "split": "dev",
+      "world_id": "mixed-dev"
+    },
+    {
+      "digest": "4e514a39bf302b0d9fe6bbc94fec42ac422ff5828f936ba5f8174d38f3159a37",
+      "id": "risk-high-dev",
+      "split": "dev",
+      "world_id": "risk-dev"
+    },
+    {
+      "digest": "1a56456e97a876523bd2ad7ecf2199bc437e4e2ae5779c6bb30b2b190b15ef2c",
+      "id": "risk-low-dev",
+      "split": "dev",
+      "world_id": "risk-dev"
+    }
+  ],
+  "schema_digest": "29f261265d516425982c53c3f61b4e0cb049993ee83373989b5a6cb2ee09c825",
+  "schema_version": "aeb-provisional-0.1",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "source": "synthetic",
+  "source_revision": "a2ce89652b3a31cffaad24ef00bd3d6bf7e06d0f",
+  "status": "complete",
+  "track": "guarded"
+}

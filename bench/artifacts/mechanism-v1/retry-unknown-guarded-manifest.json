@@ -1,0 +1,38 @@
+{
+  "decision_coverage_complete": true,
+  "decision_granularity": "epoch-batch",
+  "dependencies": {
+    "attrs": "26.1.0",
+    "jsonschema": "4.26.0",
+    "referencing": "0.37.0",
+    "rpds-py": "2026.6.3"
+  },
+  "engine_digest": "a152a339e58c0f9ae9dd7af0bf66fe79651fc61d4850a4b2878d4c22ac74d7dc",
+  "engine_version": "0.1.0",
+  "model": null,
+  "policy": "naive-retry",
+  "policy_version": "0.1.0",
+  "python": "3.11.15",
+  "scenarios": [
+    {
+      "digest": "f4c284609485f2f07b4a3757df3e7c1526d138ac75d4646899b519a248ba210f",
+      "id": "late-unknown-dev",
+      "split": "dev",
+      "world_id": "late-dev"
+    }
+  ],
+  "schema_digest": "29f261265d516425982c53c3f61b4e0cb049993ee83373989b5a6cb2ee09c825",
+  "schema_version": "aeb-provisional-0.1",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "source": "synthetic",
+  "source_revision": "a2ce89652b3a31cffaad24ef00bd3d6bf7e06d0f",
+  "status": "complete",
+  "track": "guarded"
+}

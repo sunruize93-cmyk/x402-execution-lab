@@ -1,0 +1,86 @@
+{
+  "schema_version": "aeb-provisional-0.1",
+  "split": "dev",
+  "epochs": 10,
+  "drain_epochs": 10,
+  "budget": 700,
+  "knowledge": "public",
+  "fee_rule": "on_submission",
+  "representation": "structured",
+  "identity_salt": 0,
+  "future_jobs_visible": true,
+  "initial_history": [],
+  "id": "liquidity-locked-dev",
+  "world_id": "liquidity-dev",
+  "family": "liquidity",
+  "providers": [
+    {
+      "id": "slow",
+      "fee": 10,
+      "failure_ppm": 1000000,
+      "unknown_ppm": 0,
+      "rejection_ppm": 0,
+      "confirmation_delay": 4,
+      "visibility_delay": 0,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    },
+    {
+      "id": "fast",
+      "fee": 20,
+      "failure_ppm": 0,
+      "unknown_ppm": 0,
+      "rejection_ppm": 0,
+      "confirmation_delay": 0,
+      "visibility_delay": 0,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    },
+    {
+      "id": "premium",
+      "fee": 35,
+      "failure_ppm": 0,
+      "unknown_ppm": 0,
+      "rejection_ppm": 0,
+      "confirmation_delay": 0,
+      "visibility_delay": 0,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    }
+  ],
+  "jobs": [
+    {
+      "id": "early",
+      "arrival": 0,
+      "deadline": 9,
+      "amount": 600,
+      "value": 650,
+      "failure_cost": 0,
+      "non_execution_cost": 100,
+      "delay_cost": 10,
+      "allowed_providers": [
+        "slow"
+      ]
+    },
+    {
+      "id": "opportunity",
+      "arrival": 1,
+      "deadline": 2,
+      "amount": 600,
+      "value": 1400,
+      "failure_cost": 0,
+      "non_execution_cost": 0,
+      "delay_cost": 10,
+      "allowed_providers": [
+        "fast",
+        "premium"
+      ]
+    }
+  ]
+}

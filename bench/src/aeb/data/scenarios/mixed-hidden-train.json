@@ -1,0 +1,184 @@
+{
+  "schema_version": "aeb-provisional-0.1",
+  "split": "train",
+  "epochs": 10,
+  "drain_epochs": 10,
+  "budget": 1800,
+  "knowledge": "hidden",
+  "fee_rule": "on_submission",
+  "representation": "structured",
+  "identity_salt": 0,
+  "future_jobs_visible": true,
+  "initial_history": [
+    {
+      "provider_id": "cheap",
+      "status": "chain_confirmed"
+    },
+    {
+      "provider_id": "cheap",
+      "status": "chain_confirmed"
+    },
+    {
+      "provider_id": "cheap",
+      "status": "failed"
+    },
+    {
+      "provider_id": "balanced",
+      "status": "chain_confirmed"
+    },
+    {
+      "provider_id": "balanced",
+      "status": "chain_confirmed"
+    },
+    {
+      "provider_id": "balanced",
+      "status": "failed"
+    },
+    {
+      "provider_id": "premium",
+      "status": "chain_confirmed"
+    },
+    {
+      "provider_id": "premium",
+      "status": "chain_confirmed"
+    },
+    {
+      "provider_id": "premium",
+      "status": "failed"
+    }
+  ],
+  "id": "mixed-hidden-train",
+  "world_id": "mixed-train",
+  "family": "mixed",
+  "providers": [
+    {
+      "id": "cheap",
+      "fee": 15,
+      "failure_ppm": 180000,
+      "unknown_ppm": 500000,
+      "rejection_ppm": 0,
+      "confirmation_delay": 3,
+      "visibility_delay": 2,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    },
+    {
+      "id": "balanced",
+      "fee": 35,
+      "failure_ppm": 20000,
+      "unknown_ppm": 200000,
+      "rejection_ppm": 0,
+      "confirmation_delay": 1,
+      "visibility_delay": 1,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    },
+    {
+      "id": "premium",
+      "fee": 65,
+      "failure_ppm": 0,
+      "unknown_ppm": 0,
+      "rejection_ppm": 0,
+      "confirmation_delay": 0,
+      "visibility_delay": 0,
+      "delivery_delay": 0,
+      "service_failure_ppm": 0,
+      "refund_delay": null,
+      "network_cost": 5
+    }
+  ],
+  "jobs": [
+    {
+      "id": "j0",
+      "arrival": 0,
+      "deadline": 2,
+      "amount": 180,
+      "value": 380,
+      "failure_cost": 50,
+      "non_execution_cost": 0,
+      "delay_cost": 10,
+      "allowed_providers": []
+    },
+    {
+      "id": "j1",
+      "arrival": 1,
+      "deadline": 3,
+      "amount": 220,
+      "value": 425,
+      "failure_cost": 50,
+      "non_execution_cost": 0,
+      "delay_cost": 10,
+      "allowed_providers": []
+    },
+    {
+      "id": "j2",
+      "arrival": 2,
+      "deadline": 4,
+      "amount": 260,
+      "value": 470,
+      "failure_cost": 50,
+      "non_execution_cost": 0,
+      "delay_cost": 10,
+      "allowed_providers": []
+    },
+    {
+      "id": "j3",
+      "arrival": 3,
+      "deadline": 5,
+      "amount": 180,
+      "value": 515,
+      "failure_cost": 50,
+      "non_execution_cost": 0,
+      "delay_cost": 10,
+      "allowed_providers": []
+    },
+    {
+      "id": "j4",
+      "arrival": 4,
+      "deadline": 6,
+      "amount": 220,
+      "value": 560,
+      "failure_cost": 50,
+      "non_execution_cost": 0,
+      "delay_cost": 10,
+      "allowed_providers": []
+    },
+    {
+      "id": "j5",
+      "arrival": 5,
+      "deadline": 7,
+      "amount": 260,
+      "value": 605,
+      "failure_cost": 50,
+      "non_execution_cost": 0,
+      "delay_cost": 10,
+      "allowed_providers": []
+    },
+    {
+      "id": "j6",
+      "arrival": 6,
+      "deadline": 8,
+      "amount": 180,
+      "value": 650,
+      "failure_cost": 50,
+      "non_execution_cost": 0,
+      "delay_cost": 10,
+      "allowed_providers": []
+    },
+    {
+      "id": "j7",
+      "arrival": 7,
+      "deadline": 9,
+      "amount": 220,
+      "value": 695,
+      "failure_cost": 50,
+      "non_execution_cost": 0,
+      "delay_cost": 10,
+      "allowed_providers": []
+    }
+  ]
+}

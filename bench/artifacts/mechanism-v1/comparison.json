@@ -1,0 +1,477 @@
+{
+  "contrast": "right minus left utility; signed same-information baseline gap, not oracle regret",
+  "intervention": false,
+  "left_policy": "cheapest",
+  "method": "paired percentile bootstrap, 2000 resamples of independent episode seeds per scenario",
+  "results": {
+    "late-known-dev": {
+      "ci95": [
+        0,
+        0
+      ],
+      "mean": 0,
+      "n": 6,
+      "pairs": [
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 0
+        },
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 1
+        },
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 2
+        },
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 3
+        },
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 4
+        },
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 5
+        }
+      ]
+    },
+    "late-unknown-dev": {
+      "ci95": [
+        0,
+        0
+      ],
+      "mean": 0,
+      "n": 6,
+      "pairs": [
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 0
+        },
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 1
+        },
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 2
+        },
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 3
+        },
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 4
+        },
+        {
+          "difference": 0,
+          "left": 380,
+          "left_complete": true,
+          "right": 380,
+          "right_complete": true,
+          "seed": 5
+        }
+      ]
+    },
+    "liquidity-locked-dev": {
+      "ci95": [
+        0,
+        0
+      ],
+      "mean": 0,
+      "n": 6,
+      "pairs": [
+        {
+          "difference": 0,
+          "left": -10,
+          "left_complete": true,
+          "right": -10,
+          "right_complete": true,
+          "seed": 0
+        },
+        {
+          "difference": 0,
+          "left": -10,
+          "left_complete": true,
+          "right": -10,
+          "right_complete": true,
+          "seed": 1
+        },
+        {
+          "difference": 0,
+          "left": -10,
+          "left_complete": true,
+          "right": -10,
+          "right_complete": true,
+          "seed": 2
+        },
+        {
+          "difference": 0,
+          "left": -10,
+          "left_complete": true,
+          "right": -10,
+          "right_complete": true,
+          "seed": 3
+        },
+        {
+          "difference": 0,
+          "left": -10,
+          "left_complete": true,
+          "right": -10,
+          "right_complete": true,
+          "seed": 4
+        },
+        {
+          "difference": 0,
+          "left": -10,
+          "left_complete": true,
+          "right": -10,
+          "right_complete": true,
+          "seed": 5
+        }
+      ]
+    },
+    "liquidity-released-dev": {
+      "ci95": [
+        0,
+        0
+      ],
+      "mean": 0,
+      "n": 6,
+      "pairs": [
+        {
+          "difference": 0,
+          "left": 770,
+          "left_complete": true,
+          "right": 770,
+          "right_complete": true,
+          "seed": 0
+        },
+        {
+          "difference": 0,
+          "left": 770,
+          "left_complete": true,
+          "right": 770,
+          "right_complete": true,
+          "seed": 1
+        },
+        {
+          "difference": 0,
+          "left": 770,
+          "left_complete": true,
+          "right": 770,
+          "right_complete": true,
+          "seed": 2
+        },
+        {
+          "difference": 0,
+          "left": 770,
+          "left_complete": true,
+          "right": 770,
+          "right_complete": true,
+          "seed": 3
+        },
+        {
+          "difference": 0,
+          "left": 770,
+          "left_complete": true,
+          "right": 770,
+          "right_complete": true,
+          "seed": 4
+        },
+        {
+          "difference": 0,
+          "left": 770,
+          "left_complete": true,
+          "right": 770,
+          "right_complete": true,
+          "seed": 5
+        }
+      ]
+    },
+    "mixed-hidden-dev": {
+      "ci95": [
+        0,
+        252.5
+      ],
+      "mean": 84.16666666666667,
+      "n": 6,
+      "pairs": [
+        {
+          "difference": 0,
+          "left": 1335,
+          "left_complete": true,
+          "right": 1335,
+          "right_complete": true,
+          "seed": 0
+        },
+        {
+          "difference": 0,
+          "left": 1540,
+          "left_complete": true,
+          "right": 1540,
+          "right_complete": true,
+          "seed": 1
+        },
+        {
+          "difference": 0,
+          "left": 2070,
+          "left_complete": true,
+          "right": 2070,
+          "right_complete": true,
+          "seed": 2
+        },
+        {
+          "difference": 0,
+          "left": 2070,
+          "left_complete": true,
+          "right": 2070,
+          "right_complete": true,
+          "seed": 3
+        },
+        {
+          "difference": 505,
+          "left": 1350,
+          "left_complete": true,
+          "right": 1855,
+          "right_complete": true,
+          "seed": 4
+        },
+        {
+          "difference": 0,
+          "left": 2270,
+          "left_complete": true,
+          "right": 2270,
+          "right_complete": true,
+          "seed": 5
+        }
+      ]
+    },
+    "mixed-public-dev": {
+      "ci95": [
+        -39.166666666666664,
+        511.6666666666667
+      ],
+      "mean": 238.33333333333334,
+      "n": 6,
+      "pairs": [
+        {
+          "difference": 665,
+          "left": 1335,
+          "left_complete": true,
+          "right": 2000,
+          "right_complete": true,
+          "seed": 0
+        },
+        {
+          "difference": 460,
+          "left": 1540,
+          "left_complete": true,
+          "right": 2000,
+          "right_complete": true,
+          "seed": 1
+        },
+        {
+          "difference": -70,
+          "left": 2070,
+          "left_complete": true,
+          "right": 2000,
+          "right_complete": true,
+          "seed": 2
+        },
+        {
+          "difference": -5,
+          "left": 2070,
+          "left_complete": true,
+          "right": 2065,
+          "right_complete": true,
+          "seed": 3
+        },
+        {
+          "difference": 650,
+          "left": 1350,
+          "left_complete": true,
+          "right": 2000,
+          "right_complete": true,
+          "seed": 4
+        },
+        {
+          "difference": -270,
+          "left": 2270,
+          "left_complete": true,
+          "right": 2000,
+          "right_complete": true,
+          "seed": 5
+        }
+      ]
+    },
+    "risk-high-dev": {
+      "ci95": [
+        -20,
+        180
+      ],
+      "mean": 46.666666666666664,
+      "n": 6,
+      "pairs": [
+        {
+          "difference": -20,
+          "left": -400,
+          "left_complete": true,
+          "right": -420,
+          "right_complete": true,
+          "seed": 0
+        },
+        {
+          "difference": -20,
+          "left": -400,
+          "left_complete": true,
+          "right": -420,
+          "right_complete": true,
+          "seed": 1
+        },
+        {
+          "difference": -20,
+          "left": -400,
+          "left_complete": true,
+          "right": -420,
+          "right_complete": true,
+          "seed": 2
+        },
+        {
+          "difference": -20,
+          "left": -400,
+          "left_complete": true,
+          "right": -420,
+          "right_complete": true,
+          "seed": 3
+        },
+        {
+          "difference": -20,
+          "left": -400,
+          "left_complete": true,
+          "right": -420,
+          "right_complete": true,
+          "seed": 4
+        },
+        {
+          "difference": 380,
+          "left": -800,
+          "left_complete": true,
+          "right": -420,
+          "right_complete": true,
+          "seed": 5
+        }
+      ]
+    },
+    "risk-low-dev": {
+      "ci95": [
+        0,
+        0
+      ],
+      "mean": 0,
+      "n": 6,
+      "pairs": [
+        {
+          "difference": 0,
+          "left": -400,
+          "left_complete": true,
+          "right": -400,
+          "right_complete": true,
+          "seed": 0
+        },
+        {
+          "difference": 0,
+          "left": -400,
+          "left_complete": true,
+          "right": -400,
+          "right_complete": true,
+          "seed": 1
+        },
+        {
+          "difference": 0,
+          "left": -400,
+          "left_complete": true,
+          "right": -400,
+          "right_complete": true,
+          "seed": 2
+        },
+        {
+          "difference": 0,
+          "left": -400,
+          "left_complete": true,
+          "right": -400,
+          "right_complete": true,
+          "seed": 3
+        },
+        {
+          "difference": 0,
+          "left": -400,
+          "left_complete": true,
+          "right": -400,
+          "right_complete": true,
+          "seed": 4
+        },
+        {
+          "difference": 0,
+          "left": -500,
+          "left_complete": true,
+          "right": -500,
+          "right_complete": true,
+          "seed": 5
+        }
+      ]
+    }
+  },
+  "right_policy": "expected-cost",
+  "tracks": [
+    "guarded",
+    "guarded"
+  ]
+}

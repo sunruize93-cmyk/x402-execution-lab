@@ -1,0 +1,146 @@
+{
+  "late-known-dev": {
+    "budget_violation_requests": 0,
+    "complete_episodes": 6,
+    "duplicate_payments": 0,
+    "episodes": 6,
+    "max_utility": 380,
+    "mean_utility": 380,
+    "min_utility": 380,
+    "utility_distribution": [
+      380,
+      380,
+      380,
+      380,
+      380,
+      380
+    ],
+    "worst_decile_mean_utility": 380
+  },
+  "late-unknown-dev": {
+    "budget_violation_requests": 0,
+    "complete_episodes": 6,
+    "duplicate_payments": 0,
+    "episodes": 6,
+    "max_utility": 380,
+    "mean_utility": 380,
+    "min_utility": 380,
+    "utility_distribution": [
+      380,
+      380,
+      380,
+      380,
+      380,
+      380
+    ],
+    "worst_decile_mean_utility": 380
+  },
+  "liquidity-locked-dev": {
+    "budget_violation_requests": 0,
+    "complete_episodes": 6,
+    "duplicate_payments": 0,
+    "episodes": 6,
+    "max_utility": -10,
+    "mean_utility": -10,
+    "min_utility": -10,
+    "utility_distribution": [
+      -10,
+      -10,
+      -10,
+      -10,
+      -10,
+      -10
+    ],
+    "worst_decile_mean_utility": -10
+  },
+  "liquidity-released-dev": {
+    "budget_violation_requests": 0,
+    "complete_episodes": 6,
+    "duplicate_payments": 0,
+    "episodes": 6,
+    "max_utility": 770,
+    "mean_utility": 770,
+    "min_utility": 770,
+    "utility_distribution": [
+      770,
+      770,
+      770,
+      770,
+      770,
+      770
+    ],
+    "worst_decile_mean_utility": 770
+  },
+  "mixed-hidden-dev": {
+    "budget_violation_requests": 0,
+    "complete_episodes": 6,
+    "duplicate_payments": 0,
+    "episodes": 6,
+    "max_utility": 2270,
+    "mean_utility": 1772.5,
+    "min_utility": 1335,
+    "utility_distribution": [
+      1335,
+      1350,
+      1540,
+      2070,
+      2070,
+      2270
+    ],
+    "worst_decile_mean_utility": 1335
+  },
+  "mixed-public-dev": {
+    "budget_violation_requests": 0,
+    "complete_episodes": 6,
+    "duplicate_payments": 0,
+    "episodes": 6,
+    "max_utility": 2270,
+    "mean_utility": 1772.5,
+    "min_utility": 1335,
+    "utility_distribution": [
+      1335,
+      1350,
+      1540,
+      2070,
+      2070,
+      2270
+    ],
+    "worst_decile_mean_utility": 1335
+  },
+  "risk-high-dev": {
+    "budget_violation_requests": 0,
+    "complete_episodes": 6,
+    "duplicate_payments": 0,
+    "episodes": 6,
+    "max_utility": -400,
+    "mean_utility": -466.6666666666667,
+    "min_utility": -800,
+    "utility_distribution": [
+      -800,
+      -400,
+      -400,
+      -400,
+      -400,
+      -400
+    ],
+    "worst_decile_mean_utility": -800
+  },
+  "risk-low-dev": {
+    "budget_violation_requests": 0,
+    "complete_episodes": 6,
+    "duplicate_payments": 0,
+    "episodes": 6,
+    "max_utility": -400,
+    "mean_utility": -416.6666666666667,
+    "min_utility": -500,
+    "utility_distribution": [
+      -500,
+      -400,
+      -400,
+      -400,
+      -400,
+      -400
+    ],
+    "worst_decile_mean_utility": -500
+  }
+}

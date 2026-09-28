@@ -1,0 +1,663 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sunruize93-cmyk/arena-execution-bench/contracts/aeb-v0.1",
+  "title": "AEB 0.1 provisional synthetic contract (not Lab/x402 conformance)",
+  "$defs": {
+    "scenario": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "aeb-provisional-0.1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+        },
+        "world_id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+        },
+        "family": {
+          "enum": [
+            "risk",
+            "late-confirmation",
+            "liquidity",
+            "mixed"
+          ]
+        },
+        "split": {
+          "enum": [
+            "train",
+            "dev",
+            "eval"
+          ]
+        },
+        "epochs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "drain_epochs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2000
+        },
+        "budget": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000000000
+        },
+        "knowledge": {
+          "enum": [
+            "public",
+            "hidden"
+          ]
+        },
+        "fee_rule": {
+          "enum": [
+            "on_submission",
+            "on_success"
+          ]
+        },
+        "representation": {
+          "enum": [
+            "structured",
+            "events"
+          ]
+        },
+        "identity_salt": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000000
+        },
+        "future_jobs_visible": {
+          "type": "boolean"
+        },
+        "providers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+              },
+              "fee": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000000
+              },
+              "failure_ppm": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "unknown_ppm": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "rejection_ppm": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "confirmation_delay": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2000
+              },
+              "visibility_delay": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2000
+              },
+              "delivery_delay": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2000
+              },
+              "service_failure_ppm": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "refund_delay": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "network_cost": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000000
+              }
+            },
+            "required": [
+              "id",
+              "fee",
+              "failure_ppm",
+              "unknown_ppm",
+              "rejection_ppm",
+              "confirmation_delay",
+              "visibility_delay",
+              "delivery_delay",
+              "service_failure_ppm",
+              "refund_delay",
+              "network_cost"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 10
+        },
+        "jobs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+              },
+              "arrival": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 999
+              },
+              "deadline": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3000
+              },
+              "amount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000000
+              },
+              "value": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000000
+              },
+              "failure_cost": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000000
+              },
+              "non_execution_cost": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000000
+              },
+              "delay_cost": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000000
+              },
+              "allowed_providers": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+                },
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "id",
+              "arrival",
+              "deadline",
+              "amount",
+              "value",
+              "failure_cost",
+              "non_execution_cost",
+              "delay_cost",
+              "allowed_providers"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 200
+        },
+        "initial_history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "provider_id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+              },
+              "status": {
+                "enum": [
+                  "failed",
+                  "chain_confirmed"
+                ]
+              }
+            },
+            "required": [
+              "provider_id",
+              "status"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "id",
+        "world_id",
+        "family",
+        "split",
+        "epochs",
+        "drain_epochs",
+        "budget",
+        "knowledge",
+        "fee_rule",
+        "representation",
+        "identity_salt",
+        "future_jobs_visible",
+        "providers",
+        "jobs",
+        "initial_history"
+      ],
+      "additionalProperties": false
+    },
+    "batch": {
+      "type": "object",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "actionId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+              },
+              "kind": {
+                "enum": [
+                  "select",
+                  "wait",
+                  "query",
+                  "reject",
+                  "retry"
+                ]
+              },
+              "jobId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+              },
+              "quoteId": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "attemptId": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+              },
+              "retryMode": {
+                "enum": [
+                  "rebroadcast",
+                  "new_authorization"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 256
+              }
+            },
+            "required": [
+              "actionId",
+              "kind"
+            ],
+            "additionalProperties": false,
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "select"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "jobId",
+                    "quoteId"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "query"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "attemptId"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "reject"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "jobId"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "retry"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "attemptId",
+                    "retryMode"
+                  ]
+                }
+              }
+            ]
+          },
+          "maxItems": 64
+        }
+      },
+      "required": [
+        "actions"
+      ],
+      "additionalProperties": false
+    },
+    "action": {
+      "type": "object",
+      "properties": {
+        "actionId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+        },
+        "kind": {
+          "enum": [
+            "select",
+            "wait",
+            "query",
+            "reject",
+            "retry"
+          ]
+        },
+        "jobId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+        },
+        "quoteId": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "attemptId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,100}$"
+        },
+        "retryMode": {
+          "enum": [
+            "rebroadcast",
+            "new_authorization"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "actionId",
+        "kind"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "select"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "jobId",
+              "quoteId"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "query"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "attemptId"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "reject"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "jobId"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "retry"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "attemptId",
+              "retryMode"
+            ]
+          }
+        }
+      ]
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000000
+        },
+        "epoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000000
+        },
+        "type": {
+          "enum": [
+            "episode_started",
+            "job_arrived",
+            "ledger",
+            "reserved",
+            "submitted",
+            "submission_unknown",
+            "submission_rejected",
+            "chain_confirmed",
+            "failed",
+            "service_delivered",
+            "service_failed",
+            "refund_due",
+            "refund_received",
+            "action_rejected",
+            "query_pending",
+            "rebroadcast",
+            "job_rejected",
+            "dangerous_retry_allowed",
+            "episode_finished"
+          ]
+        },
+        "data": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "sequence",
+        "epoch",
+        "type",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "observation": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "aeb-provisional-0.1"
+        },
+        "episodeId": {
+          "type": "string"
+        },
+        "epoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000000
+        },
+        "time_remaining": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000000
+        },
+        "track": {
+          "enum": [
+            "guarded",
+            "diagnostic"
+          ]
+        },
+        "knowledge": {
+          "enum": [
+            "public",
+            "hidden"
+          ]
+        },
+        "representation": {
+          "enum": [
+            "structured",
+            "events"
+          ]
+        },
+        "fee_rule": {
+          "enum": [
+            "on_submission",
+            "on_success"
+          ]
+        },
+        "jobs": {
+          "type": "array"
+        },
+        "quotes": {
+          "type": "array"
+        },
+        "future_jobs": {
+          "type": "array"
+        },
+        "ledger": {
+          "type": "object",
+          "properties": {
+            "available": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000000
+            },
+            "reserved": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000000
+            },
+            "spent": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000000
+            },
+            "receivable": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000000
+            }
+          },
+          "required": [
+            "available",
+            "reserved",
+            "spent",
+            "receivable"
+          ],
+          "additionalProperties": false
+        },
+        "attempts": {
+          "type": "array"
+        },
+        "history": {
+          "type": "array"
+        },
+        "initial_history": {
+          "type": "array"
+        },
+        "action_schema": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "schema_version",
+        "episodeId",
+        "epoch",
+        "time_remaining",
+        "track",
+        "knowledge",
+        "representation",
+        "fee_rule",
+        "jobs",
+        "quotes",
+        "future_jobs",
+        "ledger",
+        "attempts",
+        "history",
+        "initial_history",
+        "action_schema"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
