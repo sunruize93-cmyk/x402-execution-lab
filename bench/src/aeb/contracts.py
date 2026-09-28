@@ -1,7 +1,8 @@
 """One packaged, hash-locked copy of the provisional AEB contract.
 
-No released execution-lab contract was supplied. This deliberately does not
-claim conformance to x402, EVM, or an upstream Lab release.
+The original synthetic contract is retained after the monorepo migration.
+It remains separate from the sibling execution trace schema and does not
+claim conformance to x402 or EVM payment authorization.
 """
 
 import hashlib

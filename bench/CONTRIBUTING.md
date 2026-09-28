@@ -1,6 +1,6 @@
 # Contributing
 
-Install with Python 3.10+ and `python -m pip install -e '.[dev]'`. The default test suite uses synthetic local data and no model API key. For the exact development dependency snapshot, install `requirements-dev.lock` before the editable package.
+Run these module commands from `bench/`. Install with Python 3.10+ and `python -m pip install -e '.[dev]'`. The default test suite uses synthetic local data and no model API key. For the exact development dependency snapshot, install `requirements-dev.lock` before the editable package.
 
 Before sending a change:
 
@@ -13,7 +13,7 @@ git diff --check
 python -m build
 ```
 
-Schema/scenario generator changes must include regenerated packaged assets. Golden traces are intentional fixtures; inspect their changes and explain the economic behavior, not just the new digest. The CI matrix verifies Python 3.10–3.13 and installs the wheel outside the checkout.
+Schema/scenario generator changes must include regenerated packaged assets. Golden traces are intentional fixtures; inspect their changes and explain the economic behavior, not just the new digest. The repository-root CI owns module verification and installs the wheel outside the checkout.
 
 Add a small synthetic scenario and a test when changing execution semantics. Check conservation, unknown-state visibility, rejection recovery and the guarded/diagnostic boundary. Keep public observations separate from evaluator state. Do not introduce real keys, chain access, paid calls, or Arena service dependencies into tests.
 

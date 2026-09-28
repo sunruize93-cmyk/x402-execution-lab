@@ -1,8 +1,16 @@
 node_modules/
 dist/
-artifacts/
+/artifacts/
 .env
 .env.*
 *.tgz
 .DS_Store
 coverage/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+runs/

@@ -4,7 +4,9 @@ Copyright 2026 x402 Execution Lab contributors
 This project is independently maintained and is not endorsed by the x402
 Foundation, Coinbase, Circle, or the Ethereum Foundation.
 
-Code, original synthetic fixtures, and documentation: MIT License.
+Code, original synthetic fixtures, and documentation outside bench/: MIT License.
+The imported Arena Execution Bench under bench/ retains Apache-2.0;
+see bench/LICENSE and bench/NOTICE. The import does not relicense that component.
 Dependencies retain the licenses listed below; this change does not relicense them.
 The local token is an original test implementation of the EIP-3009 interface
 and EIP-712 message structure, not a production USDC contract.

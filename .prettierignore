@@ -10,3 +10,5 @@ fixtures/v1
 examples/*.json
 examples/*.jsonl
 docs/design-v1.zh-CN.md
+# Python module retains its own formatting and byte-locked generated assets.
+bench/

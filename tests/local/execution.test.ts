@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { checkTrace } from '../../packages/core/index.js';
 import { parseReport } from '../../packages/contracts/index.js';
 import { runLocalCase } from '../../packages/local-driver/local.js';
+import { summarizePayment } from '../../packages/workbench/summary.js';
 
 test(
   'HTTP timeout after real broadcast preserves reservation, then settles exactly once',
@@ -27,6 +28,10 @@ test(
     assert.equal(r.fees.payerDebitAtomic, '10000');
     assert.ok(r.findings.some((f) => f.enforcement.level === 'onchain_enforced'));
     assert.equal(JSON.stringify(trace).includes('"signature"'), false);
+    const summary = summarizePayment(r, 'en');
+    assert.equal(summary.status, 'pass');
+    assert.equal(summary.confirmedPayments, 1);
+    assert.equal(summary.payerDebitAtomic, '10000');
   },
 );
 test(
@@ -41,6 +46,11 @@ test(
     assert.ok(
       r.findings.some((f) => f.ruleId === 'X_DUPLICATE_BUSINESS_PAYMENT' && f.status === 'fail'),
     );
+    const summary = summarizePayment(r, 'zh-CN');
+    assert.equal(summary.status, 'fail');
+    assert.equal(summary.confirmedPayments, 2);
+    assert.ok(summary.issues.some((issue) => issue.id === 'duplicate-payment'));
+    assert.ok(summary.failedRules.includes('X_DUPLICATE_BUSINESS_PAYMENT'));
   },
 );
 test(

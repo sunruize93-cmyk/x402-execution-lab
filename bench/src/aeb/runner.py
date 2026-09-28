@@ -101,12 +101,29 @@ def run_episode(
 
 
 def source_revision() -> str | None:
-    root = Path(__file__).resolve().parents[2]
-    if not (root / ".git").is_dir():
+    """Resolve tracked checkout provenance, including monorepos and worktrees.
+
+    Installed wheels must not inherit a revision merely because their virtual
+    environment happens to live inside an unrelated Git checkout.
+    """
+    source = Path(__file__).resolve()
+    root = source.parents[2]
+    relative = Path("src/aeb/runner.py")
+    if (root / relative).resolve() != source:
         return None
-    result = subprocess.run(
-        ["git", "-C", str(root), "rev-parse", "HEAD"], capture_output=True, text=True
-    )
+    try:
+        tracked = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "--error-unmatch", str(relative)],
+            capture_output=True,
+            text=True,
+        )
+        if tracked.returncode != 0:
+            return None
+        result = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"], capture_output=True, text=True
+        )
+    except OSError:
+        return None
     return result.stdout.strip() if result.returncode == 0 else None
 
 

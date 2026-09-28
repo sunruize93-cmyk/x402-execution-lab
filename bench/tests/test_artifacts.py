@@ -135,3 +135,66 @@ def test_golden_traces():
             head["track"],
         )
         assert w.events == golden
+
+
+def _commit_fixture(root: Path, path: str) -> str:
+    subprocess.run(["git", "init", "--quiet", str(root)], check=True)
+    subprocess.run(["git", "-C", str(root), "add", path], check=True)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(root),
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.invalid",
+            "-c",
+            "commit.gpgsign=false",
+            "commit",
+            "--quiet",
+            "-m",
+            "fixture",
+        ],
+        check=True,
+    )
+    return subprocess.run(
+        ["git", "-C", str(root), "rev-parse", "HEAD"],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+
+
+def test_source_revision_finds_tracked_monorepo_checkout(tmp_path, monkeypatch):
+    import aeb.runner as runner
+
+    source = tmp_path / "bench/src/aeb/runner.py"
+    source.parent.mkdir(parents=True)
+    source.write_text("")
+    expected = _commit_fixture(tmp_path, "bench")
+    monkeypatch.setattr(runner, "__file__", str(source))
+    assert runner.source_revision() == expected
+
+
+def test_source_revision_ignores_wheel_inside_unrelated_checkout(tmp_path, monkeypatch):
+    import aeb.runner as runner
+
+    (tmp_path / "README.md").write_text("Unrelated project")
+    _commit_fixture(tmp_path, "README.md")
+    wheel_file = tmp_path / ".venv/lib/python3.12/site-packages/aeb/runner.py"
+    wheel_file.parent.mkdir(parents=True)
+    wheel_file.write_text("")
+    monkeypatch.setattr(runner, "__file__", str(wheel_file))
+    assert runner.source_revision() is None
+
+
+def test_source_revision_ignores_untracked_source_tree(tmp_path, monkeypatch):
+    import aeb.runner as runner
+
+    source = tmp_path / "src/aeb/runner.py"
+    source.parent.mkdir(parents=True)
+    source.write_text("")
+    subprocess.run(["git", "init", "--quiet", str(tmp_path)], check=True)
+    monkeypatch.setattr(runner, "__file__", str(source))
+    assert runner.source_revision() is None

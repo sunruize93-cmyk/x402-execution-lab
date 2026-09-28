@@ -1,7 +1,7 @@
 {
   "name": "x402-execution-lab",
   "version": "0.1.0",
-  "description": "Local tests for x402 payment timeouts, duplicate payments, and fees",
+  "description": "Agent payment checks, local x402 execution, and failure diagnosis",
   "type": "module",
   "license": "MIT",
   "engines": {
@@ -35,6 +35,8 @@
     "test": "tsx --test tests/*.test.ts",
     "test:local": "tsx --test tests/local/*.test.ts",
     "lab": "tsx packages/cli/index.ts",
+    "bench": "node scripts/bench.mjs",
+    "demo:combined": "node scripts/combined-demo.mjs",
     "check": "npm run schema:check && npm run typecheck && npm test && npm run build",
     "prepack": "npm run build",
     "contract:build": "node scripts/compile-token.mjs",

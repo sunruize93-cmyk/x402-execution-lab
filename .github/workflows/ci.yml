@@ -33,3 +33,59 @@ jobs:
           name: evidence-node-${{ matrix.node }}
           path: artifacts/
           if-no-files-found: ignore
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        python: ['3.10', '3.11', '3.12', '3.13']
+    defaults:
+      run:
+        working-directory: bench
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: |
+            bench/pyproject.toml
+            bench/requirements-dev.lock
+      - run: python -m pip install -e '.[dev]'
+      - run: ruff check src tests scripts examples
+      - run: pytest -q
+      - run: python scripts/check_docs.py
+      - run: python scripts/generate_assets.py && git -C .. diff --exit-code -- bench/src/aeb/data
+      - run: python -m build
+      - name: Install and run the wheel outside the repository
+        run: |
+          python -m venv "$RUNNER_TEMP/aeb-wheel"
+          "$RUNNER_TEMP/aeb-wheel/bin/pip" install dist/*.whl
+          cd "$RUNNER_TEMP"
+          "$RUNNER_TEMP/aeb-wheel/bin/aeb" run --scenario late-unknown-dev --out "$RUNNER_TEMP/aeb-smoke"
+          "$RUNNER_TEMP/aeb-wheel/bin/aeb" verify --episode "$RUNNER_TEMP/aeb-smoke/episodes/late-unknown-dev--seed-7"
+      - run: git diff --check
+  combined-demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: bench/pyproject.toml
+      - run: npm ci
+      - run: npm run build
+      - run: python -m pip install ./bench
+      - run: npm run demo:combined -- --out artifacts/combined-ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: combined-demo-evidence
+          path: artifacts/combined-ci/
+          if-no-files-found: ignore

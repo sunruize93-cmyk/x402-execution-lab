@@ -1,7 +1,5 @@
-# Arena Execution Bench · 中文
+# Decision Bench · 中文
 
-项目首页现在默认使用中文，完整介绍、快速上手和示例已集中到 **[README.md](README.md)**。
+本模块已合并到 x402 Execution Lab。独立安装、策略比较和重放命令见[中文模块说明](README.md)。
 
-**你的 Agent 会不会重复付款？先用模拟钱测一遍。**
-
-[进入中文首页](README.md) · [English](README.en.md) · [开源协议说明](LICENSING.md)
+[完整项目介绍](https://github.com/sunruize93-cmyk/x402-execution-lab#readme) · [English](README.en.md) · [模型接口](docs/AGENT_INTERFACE.md) · [许可说明](LICENSING.md)
