@@ -2,8 +2,6 @@
 
 Arena Execution Bench 的原创代码、文档、合成场景和测试轨迹采用 **Apache License 2.0**。
 
-Copyright © 2026 Arena Execution Bench contributors。
-
 ## 中文速读
 
 你可以按协议免费使用、商用、修改和分发本项目，也可以在闭源产品中使用它。分发原版或衍生作品时，主要要求包括：
